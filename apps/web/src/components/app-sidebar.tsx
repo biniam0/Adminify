@@ -47,7 +47,7 @@ const data = {
   navMain: [
     {
       title: "Total Reservation",
-      url: "#",
+      url: "/",
       icon: IconLifebuoy,
     },
     {
@@ -163,11 +163,11 @@ const data = {
   managements: [
     {
       name: "List Guest Houses",
-      url: "#",
+      url: "/guest-houses",
       icon: IconDatabase,
     },
     {
-      name: "Add/Edit Guest Houses",
+      name: "Add Guest Houses",
       url: "#",
       icon: IconReport,
     },

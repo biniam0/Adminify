@@ -4,24 +4,26 @@ interface Contact {
 }
 
 type RoomType = {
-  id: number;
+  id: string;
   name: string;
   roomId: string;
-  type: "Single" | "Double" | "Suite" | "Double Deluxe";
-  price: number;
+  type: string; //"Single" | "Double" | "Suite" | "Double Deluxe";
+  price: string;
   description: string;
   images: string[];
   amenities: string[];
   availability: boolean;
+  guestHouseId: string;
+  occupiedById: string | null;
 };
 
 interface GuestHouseType {
-  id: number;
+  id: string;
   name: string;
   images: string[];
   description: string;
   address: string;
-  facilities: string[];
+  facilities: string;
   contact: Contact;
   rooms?: RoomType[];
 }

@@ -1,35 +1,42 @@
 model User {
-  id            String    @id @map("_id")
+  id            String    @id @default(cuid())
   name          String
   email         String
   emailVerified Boolean
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
+  role          String?
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
+
   sessions      Session[]
   accounts      Account[]
+  occupiedRooms Room[]
 
   @@unique([email])
   @@map("user")
 }
 
 model Session {
-  id        String   @id @map("_id")
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String   @id @default(cuid())
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
 
   @@unique([token])
   @@map("session")
 }
 
 model Account {
-  id                    String    @id @map("_id")
+  id                    String    @id @default(cuid())
   accountId             String
   providerId            String
   userId                String
@@ -48,7 +55,7 @@ model Account {
 }
 
 model Verification {
-  id         String    @id @map("_id")
+  id         String    @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime
@@ -56,4 +63,34 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model GuestHouse {
+  id          String   @id @default(uuid())
+  name        String
+  images      String[]
+  description String
+  address     String
+  facilities  String
+  contact     String
+
+  rooms Room[]
+}
+
+model Room {
+  id           String   @id @default(uuid())
+  name         String
+  roomId       String   @unique
+  type         String
+  price        String
+  description  String
+  images       String[]
+  amenities    String[]
+  availability String
+
+  guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id])
+  guestHouseId String
+
+  occupiedBy   User?   @relation(fields: [occupiedById], references: [id])
+  occupiedById String?
 }

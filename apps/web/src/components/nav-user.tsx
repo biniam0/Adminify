@@ -24,21 +24,18 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { signOut } from "@/lib/auth-client";
-import { Router } from "lucide-react";
+import { type Session } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Badge } from "./ui/badge";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+interface Props {
+  session: Session;
+  signOut: () => void;
+}
+
+export function NavUser({ session, signOut }: Props) {
   const { isMobile } = useSidebar();
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -52,16 +49,20 @@ export function NavUser({
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage
                   src={
-                    "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D"
+                    session.user.image
+                      ? session.user.image
+                      : "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D"
                   }
-                  alt={user.name}
+                  alt={session.user.name}
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">
+                  {session.user.name}
+                </span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {session.user.email}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -76,13 +77,22 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={
+                      session.user.image
+                        ? session.user.image
+                        : "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D"
+                    }
+                    alt={session.user.name}
+                  />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">
+                    {session.user.name}
+                  </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {session.user.email}
                   </span>
                 </div>
               </div>
@@ -106,11 +116,15 @@ export function NavUser({
             <DropdownMenuItem
               onClick={() => {
                 signOut();
-                router.push("/signin")
+                router.push("/signin");
               }}
+              className="flex justify-between"
             >
-              <IconLogout />
-              Log out
+              <span className="flex items-center gap-2">
+                <IconLogout />
+                Log out
+              </span>
+              <Badge>{session.user.role?.toUpperCase()}</Badge>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

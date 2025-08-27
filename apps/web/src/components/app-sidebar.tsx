@@ -1,23 +1,14 @@
 "use client";
 
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
-  IconLifebuoy,
-  IconCurrencyDollar,
   IconBuilding,
+  IconCurrencyDollar,
+  IconDatabase,
+  IconFileWord,
+  IconHelp,
+  IconLifebuoy,
+  IconReport,
+  IconSettings,
 } from "@tabler/icons-react";
 import * as React from "react";
 
@@ -34,111 +25,58 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { BanknoteArrowUp, Book, Home, LifeBuoy, Warehouse } from "lucide-react";
-import { NavQuickLinks } from "./nav-quick-links";
+import { useAuth } from "@/hooks/useAuth";
+import { Book, Home } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import { NavManagement } from "./nav-management";
-import { Separator } from "./ui/separator";
+import { NavQuickLinks } from "./nav-quick-links";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
+import { useEffect } from "react";
+import { Badge } from "./ui/badge";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  overview: [
-    {
-      title: "Total Reservation",
-      url: "/",
-      icon: IconLifebuoy,
-    },
-    {
-      title: "Total Income",
-      url: "#",
-      icon: IconCurrencyDollar,
-    },
-    {
-      title: "Available Rooms",
-      url: "#",
-      icon: IconBuilding,
-    },
-  ],
-  managements: [
-    {
-      name: "List Guest Houses",
-      url: "/guest-houses",
-      icon: IconDatabase,
-    },
-    {
-      name: "Add Guest Houses",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "List Rooms",
-      url: "/rooms",
-      icon: IconFileWord,
-    },
-    {
-      name: "Add Rooms",
-      url: "#",
-      icon: IconFileWord,
-    },
-    {
-      name: "Guests",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Staffs",
-      url: "#",
-      icon: IconReport,
-    },
-  ],
-  charts: [
-    {
-      name: "Daily Bookings",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Monthly Bookings",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Revenue",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-  quickLinks: [
-    {
-      name: "Approve Booking",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Manage User",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-  ],
-};
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { session, signOut, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) { 
+  useEffect(() => {
+    if (!isLoading && !session && pathname !== "/signin") {
+      router.push("/signin");
+    }
+  }, [isLoading, session, pathname, router]);
+
+  if (isLoading || !session) {
+    return null;
+  }
+
+  const role = session.user.role;
+
+  const overviewItems =
+    role === "admin"
+      ? data.overview
+      : role === "staff"
+      ? data.overview.filter((item) => item.title !== "Total Income")
+      : [];
+
+  const managementItems =
+    role === "admin"
+      ? data.managements
+      : role === "staff"
+      ? data.managements.filter((item) =>
+          ["List Guest Houses", "List Rooms", "Guests"].includes(item.name)
+        )
+      : data.managements.filter((item) =>
+          ["List Guest Houses", "List Rooms"].includes(item.name)
+        );
+
+  const quickLinksItems =
+    role === "admin"
+      ? data.quickLinks
+      : role === "staff"
+      ? data.quickLinks.filter((item) => item.name === "Approve Booking")
+      : [];
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -148,9 +86,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/">
-                <Home className="!size-5" />
-                <span className="text-base font-semibold">Simba Home</span>
+              <a href="/" className="flex justify-between">
+                <div className="flex justify-center gap-2">
+                  <Home className="!size-5" />
+                  <span className="text-base font-semibold">Simba Home</span>
+                </div>
+                <Badge>{session.user.role?.toUpperCase()}</Badge>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -161,18 +102,54 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </Button>
           </SidebarMenuItem>
         </SidebarMenu>
+        <Separator className="mt-3" />
       </SidebarHeader>
-      <SidebarContent className="overflow-y-auto hide-scrollbar">
-        <NavOverview items={data.overview} />
-        <NavManagement items={data.managements} />
-        <NavCharts items={data.charts} />
-        <NavQuickLinks items={data.quickLinks} />
-        <Separator />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      <SidebarContent className="overflow-y-auto hide-scrollbar flex flex-col">
+        {overviewItems.length > 0 && <NavOverview items={overviewItems} />}
+        {managementItems.length > 0 && (
+          <NavManagement items={managementItems} />
+        )}
+        {role === "admin" && <NavCharts items={data.charts} />}
+        {quickLinksItems.length > 0 && (
+          <NavQuickLinks items={quickLinksItems} />
+        )}
+        <div className="mt-auto">
+          <Separator />
+          <NavSecondary items={data.navSecondary} />
+        </div>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser session={session} signOut={signOut} />
       </SidebarFooter>
     </Sidebar>
   );
 }
+
+const data = {
+  overview: [
+    { title: "Total Reservation", url: "/", icon: IconLifebuoy },
+    { title: "Total Income", url: "#", icon: IconCurrencyDollar },
+    { title: "Available Rooms", url: "#", icon: IconBuilding },
+  ],
+  managements: [
+    { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },
+    { name: "Add Guest Houses", url: "#", icon: IconReport },
+    { name: "List Rooms", url: "/rooms", icon: IconFileWord },
+    { name: "Add Rooms", url: "#", icon: IconFileWord },
+    { name: "Guests", url: "#", icon: IconDatabase },
+    { name: "Staffs", url: "#", icon: IconReport },
+  ],
+  charts: [
+    { name: "Daily Bookings", url: "#", icon: IconDatabase },
+    { name: "Monthly Bookings", url: "#", icon: IconReport },
+    { name: "Revenue", url: "#", icon: IconFileWord },
+  ],
+  quickLinks: [
+    { name: "Approve Booking", url: "#", icon: IconReport },
+    { name: "Manage User", url: "#", icon: IconFileWord },
+  ],
+  navSecondary: [
+    { title: "Settings", url: "#", icon: IconSettings },
+    { title: "Get Help", url: "#", icon: IconHelp },
+  ],
+};

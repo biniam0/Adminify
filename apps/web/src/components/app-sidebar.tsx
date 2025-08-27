@@ -34,9 +34,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { BanknoteArrowUp, Home, LifeBuoy, Warehouse } from "lucide-react";
+import { BanknoteArrowUp, Book, Home, LifeBuoy, Warehouse } from "lucide-react";
 import { NavQuickLinks } from "./nav-quick-links";
 import { NavManagement } from "./nav-management";
+import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
 
 const data = {
   user: {
@@ -44,7 +46,7 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
+  overview: [
     {
       title: "Total Reservation",
       url: "/",
@@ -61,72 +63,39 @@ const data = {
       icon: IconBuilding,
     },
   ],
-  navClouds: [
+  managements: [
     {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      name: "List Guest Houses",
+      url: "/guest-houses",
+      icon: IconDatabase,
     },
     {
-      title: "Proposal",
-      icon: IconFileDescription,
+      name: "Add Guest Houses",
       url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      icon: IconReport,
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
+      name: "List Rooms",
+      url: "/rooms",
+      icon: IconFileWord,
+    },
+    {
+      name: "Add Rooms",
       url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      icon: IconFileWord,
+    },
+    {
+      name: "Customer",
+      url: "#",
+      icon: IconDatabase,
+    },
+    {
+      name: "Staffs",
+      url: "#",
+      icon: IconReport,
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
+  charts: [
     {
       name: "Daily Bookings",
       url: "#",
@@ -145,11 +114,6 @@ const data = {
   ],
   quickLinks: [
     {
-      name: "Add Guest House",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
       name: "Approve Booking",
       url: "#",
       icon: IconReport,
@@ -160,36 +124,16 @@ const data = {
       icon: IconFileWord,
     },
   ],
-  managements: [
+  navSecondary: [
     {
-      name: "List Guest Houses",
-      url: "/guest-houses",
-      icon: IconDatabase,
+      title: "Settings",
+      url: "#",
+      icon: IconSettings,
     },
     {
-      name: "Add Guest Houses",
+      title: "Get Help",
       url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "List Rooms",
-      url: "#",
-      icon: IconFileWord,
-    },
-    {
-      name: "Add/Edit Rooms",
-      url: "#",
-      icon: IconFileWord,
-    },
-    {
-      name: "Customer",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Staffs",
-      url: "#",
-      icon: IconReport,
+      icon: IconHelp,
     },
   ],
 };
@@ -210,13 +154,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Button className="w-full max-w-[255px] mt-4" size="sm">
+              <Book className="!size-5" />
+              <span className="text-base font-semibold">Book Room</span>
+            </Button>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavOverview items={data.navMain} />
+      <SidebarContent className="overflow-y-auto hide-scrollbar">
+        <NavOverview items={data.overview} />
         <NavManagement items={data.managements} />
-        <NavCharts items={data.documents} />
+        <NavCharts items={data.charts} />
         <NavQuickLinks items={data.quickLinks} />
+        <Separator />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

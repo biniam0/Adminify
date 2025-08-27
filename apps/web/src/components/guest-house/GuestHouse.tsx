@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { GuestHouseType } from "@/types/guest";
@@ -12,14 +13,16 @@ export function GuestHouseCard({
   contact,
 }: GuestHouseType) {
   return (
-    <Card className="w-full max-w-md rounded-2xl shadow-md overflow-hidden">
-      <div className="grid grid-cols-2 gap-2 p-2">
+    <Card className="w-full rounded-2xl shadow-md overflow-hidden">
+      <div className="flex flex-wrap gap-2 p-2">
         {images.map((img, idx) => (
-          <img
+          <Image
             key={idx}
             src={img}
             alt={name}
-            className="h-40 w-full object-cover rounded-xl"
+            width={300}
+            height={160}
+            className="h-40 w-60 object-cover rounded-xl mx-auto"
           />
         ))}
       </div>

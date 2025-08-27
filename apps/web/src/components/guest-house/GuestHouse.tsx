@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { GuestHouseType } from "@/types/guest";
+import type { GuestHouseType } from "@/types/guest-room.type";
 import { Car, Coffee, Mail, MapPin, Phone, Wifi } from "lucide-react";
 
 export function GuestHouseCard({

@@ -1,4 +1,4 @@
-import { authClient } from "@/lib/auth-client";
+import { useSession, signUp } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -14,7 +14,7 @@ export default function SignUpForm({
 	onSwitchToSignIn: () => void;
 }) {
 	const router = useRouter();
-	const { isPending } = authClient.useSession();
+	const { isPending } = useSession();
 
 	const form = useForm({
 		defaultValues: {
@@ -23,7 +23,7 @@ export default function SignUpForm({
 			name: "",
 		},
 		onSubmit: async ({ value }) => {
-			await authClient.signUp.email(
+			await signUp.email(
 				{
 					email: value.email,
 					password: value.password,

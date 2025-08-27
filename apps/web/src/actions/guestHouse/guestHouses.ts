@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import type { GuestHouseType } from "@/types/guest";
+import type { GuestHouseType } from "@/types/guest-room.type";
 
 export async function getGuestHouses(): Promise<[] | GuestHouseType[]> {
   try {

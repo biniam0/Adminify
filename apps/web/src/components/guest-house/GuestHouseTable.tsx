@@ -1,4 +1,4 @@
-"use client"; // ✅ must be first line
+"use client"; 
 
 import { Card } from "@/components/ui/card";
 import {
@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import type { GuestHouseType } from "@/types/guest";
+import type { GuestHouseType } from "@/types/guest-room.type";
 
 interface GuestHouseTableProps {
   guestHouses: GuestHouseType[];

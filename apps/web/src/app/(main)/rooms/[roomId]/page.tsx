@@ -1,5 +1,5 @@
 import { getRoom } from "@/actions/rooms/getRoom";
-import { RoomCard } from "@/components/guest-house/Room";
+import { RoomCard } from "@/components/room/Room";
 
 export default async function RoomPage({
   params,

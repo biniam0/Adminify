@@ -26,17 +26,20 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
-import { Book, Home } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { Home } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { NavManagement } from "./nav-management";
 import { NavQuickLinks } from "./nav-quick-links";
-import { Button } from "./ui/button";
-import { Separator } from "./ui/separator";
-import { useEffect } from "react";
+import { BookRoomButton } from "./room/BookRoomButton";
 import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
+import { BookRoomModal } from "./room/BookRoomModal";
+import { BookRoomPage } from "./room/BookRoomPage";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { session, signOut, isLoading } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -96,10 +99,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Button className="w-full max-w-[255px] mt-4" size="sm">
-              <Book className="!size-5" />
-              <span className="text-base font-semibold">Book Room</span>
-            </Button>
+            <BookRoomButton
+              label="Book Now"
+              onClick={() => setModalOpen(true)}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
         <Separator className="mt-3" />
@@ -121,9 +124,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser session={session} signOut={signOut} />
       </SidebarFooter>
+
+      <BookRoomModal open={modalOpen} onOpenChange={setModalOpen}/>
     </Sidebar>
   );
 }
+
+const guestHouses = [
+  {
+    id: "gh1",
+    name: "Simba Guest House",
+    rooms: [
+      { id: "r1", name: "Room 101" },
+      { id: "r2", name: "Room 102" },
+    ],
+  },
+  {
+    id: "gh2",
+    name: "Lion Guest House",
+    rooms: [{ id: "r3", name: "Room 201" }],
+  },
+];
 
 const data = {
   overview: [

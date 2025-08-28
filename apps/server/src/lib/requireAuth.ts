@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 type RequireAuthOptions = {
-  roles?: string[]; 
+  roles?: string[];
 };
 
 export async function requireAuth(
-  req: Request,
   options: RequireAuthOptions = {}
 ) {
-  const session = await auth.api.getSession({ headers: req.headers });
+  const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
     return {
@@ -19,8 +19,8 @@ export async function requireAuth(
   }
 
   if (options.roles && options.roles.length > 0 && session.user.role) {
-    const userRole = session.user.role
-    const hasRole = options.roles.includes(userRole)
+    const userRole = session.user.role;
+    const hasRole = options.roles.includes(userRole);
 
     if (!hasRole) {
       return {

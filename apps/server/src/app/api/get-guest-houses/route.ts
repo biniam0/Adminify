@@ -2,8 +2,8 @@ import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/requireAuth";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  const { session, response } = await requireAuth(req);
+export async function GET() {
+  const { session, response } = await requireAuth();
   if (!session) return response!;
 
   try {

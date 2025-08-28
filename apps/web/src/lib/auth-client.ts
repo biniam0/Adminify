@@ -4,6 +4,9 @@ import { adminClient } from "better-auth/client/plugins";
 const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
   plugins: [adminClient()],
+  fetchOptions: {
+    credentials: "include",
+  },
 });
 
 export const {

@@ -11,9 +11,9 @@ model User {
   banReason     String?
   banExpires    DateTime?
 
-  sessions      Session[]
-  accounts      Account[]
-  occupiedRooms Room[]
+  sessions Session[]
+  accounts Account[]
+  rooms    Room[]    @relation("OccupiedRooms")
 
   @@unique([email])
   @@map("user")
@@ -72,7 +72,7 @@ model GuestHouse {
   description String
   address     String
   facilities  String
-  contact     String
+  contact     Json?
 
   rooms Room[]
 }
@@ -88,9 +88,9 @@ model Room {
   amenities    String[]
   availability String
 
-  guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id])
+  guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id], onDelete: Cascade)
   guestHouseId String
 
-  occupiedBy   User?   @relation(fields: [occupiedById], references: [id])
+  occupiedBy   User?   @relation("OccupiedRooms", fields: [occupiedById], references: [id], onDelete: Cascade)
   occupiedById String?
 }

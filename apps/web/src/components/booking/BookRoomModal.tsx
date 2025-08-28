@@ -22,6 +22,7 @@ import type { GuestHouseType, RoomType } from "@/types/guest-room.type";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { getGuestHouses } from "@/actions/guestHouse/guestHouses";
+import { createBooking } from "@/actions/booking/create-booking";
 
 interface Props {
   open: boolean;
@@ -49,10 +50,30 @@ export function BookRoomModal({ open, onOpenChange }: Props) {
     setSelectedRoom("");
   }, [selectedGuestHouse, guestHouses]);
 
-  const handleBooking = (e: React.FormEvent) => {
+  const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     onOpenChange(false);
-    toast.success(`Booked GH: ${selectedGuestHouse}, Room: ${selectedRoom}`);
+
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const bookingData = {
+      roomId: selectedRoom,
+      checkIn: formData.get("check-in") as string,
+      checkOut: formData.get("check-out") as string,
+      guests: Number(formData.get("guests")),
+    };
+    try {
+      const booking = await createBooking(bookingData);
+
+      toast.success(
+        booking.status === "APPROVED"
+          ? `Booking confirmed instantly for Room ${booking.roomId}`
+          : `Booking submitted. Waiting for approval.`
+      );
+
+      onOpenChange(false);
+    } catch (err) {
+      toast.error("Failed to create booking");
+    }
   };
 
   if (loading) return null;
@@ -113,8 +134,8 @@ export function BookRoomModal({ open, onOpenChange }: Props) {
             <Input id="check-in" name="check-in" type="date" required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="checkout">Check-out Date</Label>
-            <Input id="checkout" name="checkout" type="date" required />
+            <Label htmlFor="check-out">Check-out Date</Label>
+            <Input id="check-out" name="check-out" type="date" required />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="guests">Number of Guests</Label>

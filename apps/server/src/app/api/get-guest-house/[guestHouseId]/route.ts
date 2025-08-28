@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ guestHouseId: string }> }
 ) {
   const { guestHouseId } = await params;
-  const { session, response } = await requireAuth(req);
+  const { session, response } = await requireAuth();
 
   if (!session) return response!;
 

@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getGuestHouses } from "@/actions/guestHouse/guestHouses"; 
+import { getGuestHouses } from "@/actions/guestHouse/guestHouses";
 import type { GuestHouseType } from "@/types/guest-room.type";
-import { BookRoomModal } from "./BookRoomModal";
+import { BookRoomModal } from "../booking/BookRoomModal";
 
-export function BookRoomPage({ open, onOpenChange }: { 
+export function BookRoomPage({
+  open,
+  onOpenChange,
+}: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
 }) {
@@ -20,12 +23,7 @@ export function BookRoomPage({ open, onOpenChange }: {
     })();
   }, []);
 
-  if (loading) return null; 
+  if (loading) return null;
 
-  return (
-    <BookRoomModal 
-      open={open} 
-      onOpenChange={onOpenChange} 
-    />
-  );
+  return <BookRoomModal open={open} onOpenChange={onOpenChange} />;
 }

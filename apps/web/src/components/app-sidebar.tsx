@@ -34,7 +34,7 @@ import { NavQuickLinks } from "./nav-quick-links";
 import { BookRoomButton } from "./room/BookRoomButton";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
-import { BookRoomModal } from "./room/BookRoomModal";
+import { BookRoomModal } from "./booking/BookRoomModal";
 import { BookRoomPage } from "./room/BookRoomPage";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -56,16 +56,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const role = session.user.role;
 
   const overviewItems =
-    role === "admin"
+    role === "ADMIN"
       ? data.overview
-      : role === "staff"
+      : role === "STAFF"
       ? data.overview.filter((item) => item.title !== "Total Income")
       : [];
 
   const managementItems =
-    role === "admin"
+    role === "ADMIN"
       ? data.managements
-      : role === "staff"
+      : role === "STAFF"
       ? data.managements.filter((item) =>
           ["List Guest Houses", "List Rooms", "Guests"].includes(item.name)
         )
@@ -74,9 +74,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         );
 
   const quickLinksItems =
-    role === "admin"
+    role === "ADMIN"
       ? data.quickLinks
-      : role === "staff"
+      : role === "STAFF"
       ? data.quickLinks.filter((item) => item.name === "Approve Booking")
       : [];
 
@@ -125,7 +125,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser session={session} signOut={signOut} />
       </SidebarFooter>
 
-      <BookRoomModal open={modalOpen} onOpenChange={setModalOpen}/>
+      <BookRoomModal open={modalOpen} onOpenChange={setModalOpen} />
     </Sidebar>
   );
 }
@@ -166,7 +166,7 @@ const data = {
     { name: "Revenue", url: "#", icon: IconFileWord },
   ],
   quickLinks: [
-    { name: "Approve Booking", url: "#", icon: IconReport },
+    { name: "Approve Booking", url: "/approve-booking", icon: IconReport },
     { name: "Manage User", url: "#", icon: IconFileWord },
   ],
   navSecondary: [

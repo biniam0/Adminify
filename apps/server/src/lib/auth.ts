@@ -28,3 +28,5 @@ export const auth = betterAuth({
   },
   plugins: [admin()],
 });
+
+export const { getSession } = auth.api;

@@ -1,7 +1,11 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAuth } from "@/lib/requireAuth";
+import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { session, response } = await requireAuth(req);
+  if (!session) return response!;
+
   try {
     const guestHouses = await prisma.guestHouse.findMany({
       include: {

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
+import { requireAuth } from "@/lib/requireAuth";
 import prisma from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: Request) {
+  
+    const { session, response } = await requireAuth(req);
+  
+    if (!session) return response!;
+  
   try {
     const rooms = await prisma.room.findMany();
 

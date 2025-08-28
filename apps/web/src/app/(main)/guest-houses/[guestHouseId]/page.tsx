@@ -1,3 +1,4 @@
+import { getGuestHouse } from "@/actions/guestHouse/guestHouse";
 import { GuestHouseCard } from "@/components/guest-house/GuestHouse";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,20 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { GuestHouseType } from "@/types/guest";
-import { dummyGuestHouses } from "../dummyData";
-
-function getGuestHouse(id: number): GuestHouseType | undefined {
-  return dummyGuestHouses.find((guest) => Number(guest.id) === id);
-}
 
 export default async function GuestHousePage({
   params,
 }: {
-  params: { guestHouseId: string };
+  params: Promise<{ guestHouseId: string }>;
 }) {
   const { guestHouseId } = await params
-  const guestHouse = getGuestHouse(parseInt(guestHouseId))
+  const guestHouse = await getGuestHouse(guestHouseId)
 
   if (!guestHouse) {
     return <div className="p-4 text-red-500">Guest House not found</div>;

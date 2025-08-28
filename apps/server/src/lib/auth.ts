@@ -18,5 +18,15 @@ export const auth = betterAuth({
       httpOnly: true,
     },
   },
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 7,
+    },
+  },
   plugins: [admin()],
 });
+
+export const { getSession } = auth.api;

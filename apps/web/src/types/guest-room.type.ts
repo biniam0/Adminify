@@ -7,7 +7,7 @@ type RoomType = {
   id: string;
   name: string;
   roomId: string;
-  type: string; //"Single" | "Double" | "Suite" | "Double Deluxe";
+  type: string;
   price: string;
   description: string;
   images: string[];
@@ -28,4 +28,4 @@ interface GuestHouseType {
   rooms?: RoomType[];
 }
 
-export type { GuestHouseType, Contact };
+export type { GuestHouseType, RoomType, Contact };

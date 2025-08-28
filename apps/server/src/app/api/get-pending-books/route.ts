@@ -7,17 +7,18 @@ export async function GET() {
   if (!session) return response!;
 
   try {
-    const guestHouses = await prisma.guestHouse.findMany({
+    const pendingBooks = await prisma.booking.findMany({
       include: {
-        rooms: true,
+        user: true,
+        room: true,
       },
     });
 
-    return NextResponse.json(guestHouses, { status: 200 });
+    return NextResponse.json(pendingBooks, { status: 200 });
   } catch (error) {
-    console.error("Error fetching guest houses:", error);
+    console.error("Error fetching pending books:", error);
     return NextResponse.json(
-      { error: "Failed to fetch guest houses" },
+      { error: "Failed to pending books" },
       { status: 500 }
     );
   }

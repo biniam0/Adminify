@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { GuestHouseType } from "@/types/guest";
+import type { GuestHouseType } from "@/types/guest-room.type";
 import { Car, Coffee, Mail, MapPin, Phone, Wifi } from "lucide-react";
 
 export function GuestHouseCard({
@@ -14,7 +14,7 @@ export function GuestHouseCard({
 }: GuestHouseType) {
   return (
     <Card className="w-full rounded-2xl shadow-md overflow-hidden">
-      <div className="flex flex-wrap gap-2 p-2">
+      <div className="flex flex-wrap justify-center gap-2 p-3">
         {images.map((img, idx) => (
           <Image
             key={idx}
@@ -22,7 +22,7 @@ export function GuestHouseCard({
             alt={name}
             width={300}
             height={160}
-            className="h-40 w-60 object-cover rounded-xl mx-auto"
+            className="h-40 w-60 object-cover rounded-xl"
           />
         ))}
       </div>

@@ -1,4 +1,4 @@
-import type { GuestHouseType } from "@/types/guest";
+import type { GuestHouseType } from "@/types/guest-room.type";
 
 export const dummyGuestHouses: GuestHouseType[] = [
   {

@@ -1,9 +1,19 @@
 import { createAuthClient } from "better-auth/react";
 import { adminClient } from "better-auth/client/plugins";
+import { ac, ADMIN, GUEST, STAFF } from "./permissions";
 
 const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  plugins: [adminClient()],
+  plugins: [
+    adminClient({
+      ac,
+      roles: {
+        ADMIN,
+        STAFF,
+        GUEST,
+      },
+    }),
+  ],
   fetchOptions: {
     credentials: "include",
   },

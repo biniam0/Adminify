@@ -1,9 +1,15 @@
 export interface PendingBook {
   id: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+
   checkIn: string;
   checkOut: string;
   guests: number;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+
+  paymentStatus: "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED";
+  transactionRef: string;
+  paymentInfo: string;
+
   createdAt: string;
   updatedAt: string;
 
@@ -19,4 +25,11 @@ export interface PendingBook {
     price: string;
     roomId: string;
   };
+
+  approvedBy?: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+  approvedById: string | null;
 }

@@ -6,7 +6,7 @@ model User {
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
-  role          UserRole  @default(GUEST)
+  role          String    @default("GUEST")
   banned        Boolean?
   banReason     String?
   banExpires    DateTime?
@@ -68,56 +68,110 @@ model Verification {
 }
 
 model GuestHouse {
-  id          String   @id @default(uuid())
+  id          String         @id @default(uuid())
   name        String
-  images      String[]
   description String
   address     String
-  facilities  String
-  contact     Json?
+  type        GuestHouseType @default(SHARED)
+
+  images     Json[] // [{url, name}]
+  about      About?
+  feedbacks  Json? // [{ message: String, rating: Int }]
+  location   Location?
+  facilities String[] // [ "Free Wi-Fi", "Sea view", "Breakfast included", "Airport Shuttle", ]
+  contact    Json // { phone: String, email: String }
 
   rooms Room[]
 }
 
+model About {
+  id          String  @id @default(uuid())
+  description String
+  review      Review?
+
+  guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id], onDelete: Cascade)
+  guestHouseId String     @unique
+}
+
+model Review {
+  id             String @id @default(uuid())
+  averageRating  Float
+  totalReviewers Int
+
+  about   About  @relation(fields: [aboutId], references: [id], onDelete: Cascade)
+  aboutId String @unique
+}
+
+model Location {
+  id        String  @id @default(uuid())
+  continent String
+  country   String
+  city      String
+  subcity   String
+  nearby    String?
+
+  guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id], onDelete: Cascade)
+  guestHouseId String     @unique
+}
+
 model Room {
-  id           String   @id @default(uuid())
+  id           String       @id @default(uuid())
   name         String
-  roomId       String   @unique
-  type         String
-  price        String
+  roomId       String       @unique
+  type         EachRoomType @default(SINGLE)
+  price        Int
   description  String
-  images       String[]
-  amenities    String[]
-  availability String
+  images       Json[] // [{url, name}]
+  availability Boolean
+
+  square_meters    Int
+  max_occupancy    Int
+  beds             Json // { single_beds: 1, double_beds: 0, queen_beds: 0, king_beds: 0, sofa_beds: 0, cribs: false }
+  living_features  Json // { private_bathroom: true, bathtub: false, shower: true, hairdryer: true, minibar: true, tv: true, streaming_tv: false, wifi_available: true}
+  kitchen_features Json // { coffee_maker: true, refrigerator: true, microwave: true }
+  accessibility    Json // { wheelchair_accessible:true }
+  hygiene_features Json // { sanitizer: true, hygiene_kits: false, digital_keys: false}
+  last_updated     DateTime @default(now())
 
   guestHouse   GuestHouse @relation(fields: [guestHouseId], references: [id], onDelete: Cascade)
   guestHouseId String
 
-  occupiedBy   User?     @relation("OccupiedRooms", fields: [occupiedById], references: [id], onDelete: Cascade)
+  occupiedBy   User?   @relation("OccupiedRooms", fields: [occupiedById], references: [id], onDelete: Cascade)
   occupiedById String?
-  Booking      Booking[]
+
+  Booking Booking[]
 }
 
 model Booking {
   id String @id @default(uuid())
 
-  user   User   @relation(fields: [userId], references: [id])
+  checkIn  DateTime
+  checkOut DateTime
+  guests   Int
+  status   BookingStatus @default(PENDING)
+
+  paymentStatus  PaymentStatus @default(PENDING)
+  transactionRef String?
+  paymentInfo    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  room   Room   @relation(fields: [roomId], references: [id])
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId String
-
-  status    BookingStatus @default(PENDING)
-  checkIn   DateTime
-  checkOut  DateTime
-  guests    Int
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
 
   approvedBy   User?   @relation("ApprovedBookings", fields: [approvedById], references: [id])
   approvedById String?
+}
 
-  paymentInfo String?
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
 }
 
 enum BookingStatus {
@@ -127,9 +181,19 @@ enum BookingStatus {
   CANCELLED
 }
 
-enum UserRole {
-  GUEST
-  STAFF
-  ADMIN
+enum GuestHouseType {
+  PRIVATE
+  SHARED
 }
 
+enum EachRoomType {
+  SINGLE
+  DOUBLE
+  TWIN
+  DELUXE
+  SUITE
+  FAMILY
+  STUDIO
+  EXECUTIVE
+  PRESIDENTIAL
+}

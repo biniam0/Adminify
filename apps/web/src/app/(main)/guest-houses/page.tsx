@@ -1,8 +1,8 @@
 import { getGuestHouses } from "@/actions/guestHouse/guestHouses";
-import GuestHouseTable from "@/components/guest-house/GuestHouseTable";
+import GuestHouseGrid from "@/components/guest-house/GuestHouseGrid";
 
 export default async function GuestHousePage() {
   const guestHouses = await getGuestHouses();
 
-  return <GuestHouseTable guestHouses={guestHouses} />;
+  return <GuestHouseGrid guestHouses={guestHouses} />;
 }

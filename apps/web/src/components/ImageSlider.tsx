@@ -7,23 +7,40 @@ export function ImageSlider({
 }: {
   images: { url: string; name: string }[];
 }) {
+  if (!images || images.length === 0) {
+    return (
+      <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-t-lg">
+        <span className="text-gray-500">No images available</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="m-2">
+    <div className="w-full h-full">
       <Swiper
         modules={[Navigation, Pagination, A11y]}
         navigation
-        pagination={{ clickable: true }}
-        spaceBetween={10}
+        pagination={{
+          clickable: true,
+          dynamicBullets: true,
+        }}
+        spaceBetween={0}
         slidesPerView={1}
-        className="h-48"
+        loop={images.length > 1}
+        className="w-full h-full rounded-t-lg"
       >
         {images.map((img, idx) => (
-          <SwiperSlide key={idx} className="relative w-full h-48">
+          <SwiperSlide
+            key={`${img.url}-${idx}`}
+            className="relative w-full h-full"
+          >
             <Image
               src={img.url}
-              alt={img.name}
+              alt={img.name || `Guest house image ${idx + 1}`}
               fill
-              className="object-cover rounded-md"
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              priority={idx === 0}
             />
           </SwiperSlide>
         ))}

@@ -1,6 +1,5 @@
 "use client";
 
-import { dummyGuestHouses } from "@/app/(main)/guest-houses/dummyData";
 import type { RoomType } from "@/types/guest-room.type";
 import { useRouter } from "next/navigation";
 import { RoomCard } from "./RoomCard";

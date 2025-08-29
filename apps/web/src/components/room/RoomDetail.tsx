@@ -9,16 +9,16 @@ interface RoomCardProps {
   room: RoomType;
 }
 
-export function RoomCard({ room }: RoomCardProps) {
-  const { name, type, price, images, amenities, availability } = room;
+export function RoomDetail({ room }: RoomCardProps) {
+  const { name, type, price, images, availability } = room;
 
   return (
     <Card className="w-full rounded-2xl shadow-lg overflow-hidden mt-0">
       <div className="flex flex-wrap justify-center gap-2 p-3">
-        {images.map((img, idx) => (
+        {images.map(({url, name}, idx) => (
           <img
             key={idx}
-            src={img}
+            src={url}
             alt={`${name} image ${idx + 1}`}
             className="h-40 w-fit object-cover rounded-md"
           />
@@ -32,13 +32,6 @@ export function RoomCard({ room }: RoomCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        <div className="flex flex-wrap gap-2">
-          {amenities.map((amenity, idx) => (
-            <Badge key={idx} variant="secondary">
-              {amenity}
-            </Badge>
-          ))}
-        </div>
 
         <div className="text-sm font-medium">
           {availability ? (

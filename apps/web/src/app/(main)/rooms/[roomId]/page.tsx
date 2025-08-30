@@ -1,6 +1,8 @@
 import { getRoom } from "@/actions/rooms/getRoom";
 import { RoomDetail } from "@/components/room/RoomDetail";
 
+export const dynamic = "force-dynamic";
+
 export default async function RoomPage({
   params,
 }: {

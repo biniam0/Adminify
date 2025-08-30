@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
       "encrypted-tbn0.gstatic.com",
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://adminify-api.onrender.com/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

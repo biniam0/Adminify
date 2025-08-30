@@ -1,5 +1,5 @@
 import { getGuestHouse } from "@/actions/guestHouse/guestHouse";
-import { GuestHouseCard } from "@/components/guest-house/GuestHouse";
+import { GuestHouseDetail } from "@/components/guest-house/GuestHouseDetail";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -16,8 +16,8 @@ export default async function GuestHousePage({
 }: {
   params: Promise<{ guestHouseId: string }>;
 }) {
-  const { guestHouseId } = await params
-  const guestHouse = await getGuestHouse(guestHouseId)
+  const { guestHouseId } = await params;
+  const guestHouse = await getGuestHouse(guestHouseId);
 
   if (!guestHouse) {
     return <div className="p-4 text-red-500">Guest House not found</div>;
@@ -25,7 +25,7 @@ export default async function GuestHousePage({
 
   return (
     <div className="flex flex-col justify-center gap-6 p-4">
-      <GuestHouseCard {...guestHouse} />
+      <GuestHouseDetail {...guestHouse} />
       <div className="flex justify-center gap-6 p-4">
         <Button>Edit</Button>
         <Button variant="destructive">Delete</Button>

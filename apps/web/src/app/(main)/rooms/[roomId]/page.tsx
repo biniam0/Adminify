@@ -1,5 +1,5 @@
 import { getRoom } from "@/actions/rooms/getRoom";
-import { RoomCard } from "@/components/room/Room";
+import { RoomDetail } from "@/components/room/RoomDetail";
 
 export default async function RoomPage({
   params,
@@ -15,7 +15,7 @@ export default async function RoomPage({
 
   return (
     <div className="flex justify-center p-4">
-      <RoomCard room={room} />
+      <RoomDetail room={room} />
     </div>
   );
 }

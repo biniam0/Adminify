@@ -11,7 +11,6 @@ import {
   IconSettings,
 } from "@tabler/icons-react";
 import * as React from "react";
-
 import { NavCharts } from "@/components/nav-charts";
 import { NavOverview } from "@/components/nav-overview";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -32,10 +31,9 @@ import { useEffect, useState } from "react";
 import { NavManagement } from "./nav-management";
 import { NavQuickLinks } from "./nav-quick-links";
 import { BookRoomButton } from "./room/BookRoomButton";
+import { BookRoomPage } from "./room/BookRoomPage";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
-import { BookRoomModal } from "./booking/BookRoomModal";
-import { BookRoomPage } from "./room/BookRoomPage";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { session, signOut, isLoading } = useAuth();
@@ -125,52 +123,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser session={session} signOut={signOut} />
       </SidebarFooter>
 
-      <BookRoomModal open={modalOpen} onOpenChange={setModalOpen} />
+      <BookRoomPage open={modalOpen} onOpenChange={setModalOpen} />
     </Sidebar>
   );
 }
 
-const guestHouses = [
-  {
-    id: "gh1",
-    name: "Simba Guest House",
-    rooms: [
-      { id: "r1", name: "Room 101" },
-      { id: "r2", name: "Room 102" },
-    ],
-  },
-  {
-    id: "gh2",
-    name: "Lion Guest House",
-    rooms: [{ id: "r3", name: "Room 201" }],
-  },
-];
-
 const data = {
   overview: [
     { title: "Total Reservation", url: "/", icon: IconLifebuoy },
-    { title: "Total Income", url: "#", icon: IconCurrencyDollar },
-    { title: "Available Rooms", url: "#", icon: IconBuilding },
+    { title: "Total Income | Coming Soon", url: "#", icon: IconCurrencyDollar },
+    { title: "Available Rooms | Coming Soon", url: "#", icon: IconBuilding },
   ],
   managements: [
     { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },
-    { name: "Add Guest Houses", url: "#", icon: IconReport },
+    { name: "Add Guest Houses | Coming Soon", url: "#", icon: IconReport },
     { name: "List Rooms", url: "/rooms", icon: IconFileWord },
-    { name: "Add Rooms", url: "#", icon: IconFileWord },
-    { name: "Guests", url: "#", icon: IconDatabase },
-    { name: "Staffs", url: "#", icon: IconReport },
+    { name: "Add Rooms | Coming Soon", url: "#", icon: IconFileWord },
+    { name: "Guests | Coming Soon", url: "#", icon: IconDatabase },
+    { name: "Staffs | Coming Soon", url: "#", icon: IconReport },
   ],
   charts: [
-    { name: "Daily Bookings", url: "#", icon: IconDatabase },
-    { name: "Monthly Bookings", url: "#", icon: IconReport },
-    { name: "Revenue", url: "#", icon: IconFileWord },
+    { name: "Daily Bookings | Coming Soon", url: "#", icon: IconDatabase },
+    { name: "Monthly Bookings | Coming Soon", url: "#", icon: IconReport },
+    { name: "Revenue | Coming Soon", url: "#", icon: IconFileWord },
   ],
   quickLinks: [
     { name: "Approve Booking", url: "/approve-booking", icon: IconReport },
-    { name: "Manage User", url: "#", icon: IconFileWord },
+    { name: "Manage User | Coming Soon", url: "#", icon: IconFileWord },
   ],
   navSecondary: [
-    { title: "Settings", url: "#", icon: IconSettings },
-    { title: "Get Help", url: "#", icon: IconHelp },
+    { title: "Settings | Coming Soon", url: "#", icon: IconSettings },
+    { title: "Get Help | Coming Soon", url: "#", icon: IconHelp },
   ],
 };

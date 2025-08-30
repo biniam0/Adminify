@@ -4,10 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { GuestHouseType } from "@/types/guest-room.type";
 import { Car, Coffee, Mail, MapPin, Phone, Wifi } from "lucide-react";
 
-export function GuestHouseCard({
+export function GuestHouseDetail({
   name,
   images,
-  description,
   address,
   facilities,
   contact,
@@ -15,10 +14,10 @@ export function GuestHouseCard({
   return (
     <Card className="w-full rounded-2xl shadow-md overflow-hidden">
       <div className="flex flex-wrap justify-center gap-2 p-3">
-        {images.map((img, idx) => (
+        {images.map(({ url, name }, idx) => (
           <Image
             key={idx}
-            src={img}
+            src={url}
             alt={name}
             width={300}
             height={160}
@@ -29,7 +28,9 @@ export function GuestHouseCard({
 
       <CardHeader>
         <CardTitle className="text-xl font-semibold">{name}</CardTitle>
-        <p className="text-sm text-gray-500 line-clamp-2">{description}</p>
+        <p className="text-sm text-gray-500 line-clamp-2">
+          {about.description}
+        </p>
       </CardHeader>
 
       <CardContent className="space-y-3">

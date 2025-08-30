@@ -4,6 +4,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "1",
     name: "Sunset Guest House",
+    type: "Private",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",
@@ -155,6 +156,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "3",
     name: "Highland Lodge",
+    type: "Private",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",
@@ -293,6 +295,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "2",
     name: "Highland Lodge",
+    type: "Shared",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",
@@ -430,6 +433,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "4",
     name: "Highland Lodge",
+    type: "Shared",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",
@@ -567,6 +571,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "5",
     name: "Highland Lodge",
+    type: "Shared",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",

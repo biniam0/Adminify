@@ -18,7 +18,7 @@ type RoomType = {
   id: string;
   name: string;
   roomId: string;
-  type: EachRoomType
+  type: EachRoomType;
   price: string;
   description: string;
   images: { url: string; name: string }[];
@@ -72,6 +72,7 @@ type AboutType = {
 interface GuestHouseType {
   id: string;
   name: string;
+  type: "Shared" | "Private";
   images: { url: string; name: string }[];
   about: AboutType;
   feedback: { message: string; rating: number }[];

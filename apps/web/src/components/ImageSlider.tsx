@@ -27,7 +27,7 @@ export function ImageSlider({
         spaceBetween={0}
         slidesPerView={1}
         loop={images.length > 1}
-        className="w-full h-full rounded-t-lg"
+        className="w-full h-full rounded-t-lg guest-house-swiper"
       >
         {images.map((img, idx) => (
           <SwiperSlide
@@ -39,7 +39,7 @@ export function ImageSlider({
               alt={img.name || `Guest house image ${idx + 1}`}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
               priority={idx === 0}
             />
           </SwiperSlide>

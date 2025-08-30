@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     if (autoApprove) {
       await prisma.room.update({
         where: { id: data.roomId },
-        data: { occupiedById: session.user.id, availability: "false" },
+        data: { occupiedById: session.user.id, availability: false },
       });
     }
 

@@ -10,6 +10,7 @@ export function GuestHouseDetail({
   address,
   facilities,
   contact,
+  about
 }: GuestHouseType) {
   return (
     <Card className="w-full rounded-2xl shadow-md overflow-hidden">

@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { roomId } = await params;
   
-    const { session, response } = await requireAuth(req);
+    const { session, response } = await requireAuth();
   
     if (!session) return response!;
   

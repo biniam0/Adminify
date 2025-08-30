@@ -9,7 +9,6 @@ interface GuestHouseTableProps {
 }
 
 export default function GuestHouseGrid({ guestHouses }: GuestHouseTableProps) {
-  guestHouses = dummyGuestHouses
   return (
     <div className="flex flex-col gap-3 p-2">
       <h1 className="text-2xl font-bold pl-1">Browse Guest Houses</h1>

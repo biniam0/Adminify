@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { getGuestHouses } from "@/actions/guestHouse/guestHouses";
 import type { GuestHouseType } from "@/types/guest-room.type";
-import { BookRoomModal } from "../booking/BookRoomModal";
+import { BookRoomModal, type BookingFormData } from "../booking/BookRoomModal";
+import { PreviewBookModal } from "../booking/PreviewBookModal";
 
 export function BookRoomPage({
   open,
@@ -14,6 +15,8 @@ export function BookRoomPage({
 }) {
   const [guestHouses, setGuestHouses] = useState<GuestHouseType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [bookingData, setBookingData] = useState<BookingFormData | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -23,7 +26,42 @@ export function BookRoomPage({
     })();
   }, []);
 
+  const handleBookingSubmit = (data: BookingFormData) => {
+    setBookingData(data);
+    onOpenChange(false);
+    setShowPreviewModal(true);
+  };
+
+  const handleBookingComplete = () => {
+    setShowPreviewModal(false);
+    setBookingData(null);
+  };
+
+  const handlePreviewClose = (open: boolean) => {
+    setShowPreviewModal(open);
+    if (!open) {
+      setBookingData(null);
+    }
+  };
+
   if (loading) return null;
 
-  return <BookRoomModal open={open} onOpenChange={onOpenChange} />;
+  return (
+    <>
+      <BookRoomModal
+        open={open}
+        onOpenChange={onOpenChange}
+        onBookingSubmit={handleBookingSubmit}
+        guestHouses={guestHouses}
+        loading={loading}
+      />
+
+      <PreviewBookModal
+        open={showPreviewModal}
+        onOpenChange={handlePreviewClose}
+        bookingData={bookingData}
+        onBookingComplete={handleBookingComplete}
+      />
+    </>
+  );
 }

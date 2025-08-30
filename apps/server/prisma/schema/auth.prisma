@@ -68,13 +68,12 @@ model Verification {
 }
 
 model GuestHouse {
-  id          String         @id @default(uuid())
-  name        String
-  description String
-  address     String
-  type        GuestHouseType @default(SHARED)
+  id      String         @id @default(uuid())
+  name    String
+  address String
+  type    GuestHouseType @default(SHARED)
 
-  images     Json[] // [{url, name}]
+  images     Json // [{url, name}]
   about      About?
   feedbacks  Json? // [{ message: String, rating: Int }]
   location   Location?
@@ -121,7 +120,7 @@ model Room {
   type         EachRoomType @default(SINGLE)
   price        Int
   description  String
-  images       Json[] // [{url, name}]
+  images       Json // [{url, name}]
   availability Boolean
 
   square_meters    Int

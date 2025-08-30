@@ -10,6 +10,8 @@ export async function GET() {
     const guestHouses = await prisma.guestHouse.findMany({
       include: {
         rooms: true,
+        location: true,
+        about: { include: { review: true } },
       },
     });
 

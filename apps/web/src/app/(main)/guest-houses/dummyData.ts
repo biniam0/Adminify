@@ -41,7 +41,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
       "Breakfast included",
       "Airport Shuttle",
     ],
-    contact: { phone: "+251-912345678", email: "sunset@guest.com" },
+    contact: { "phone": "+251-912345678", "email": "sunset@guest.com" },
 
     rooms: [
       {
@@ -95,9 +95,9 @@ export const dummyGuestHouses: GuestHouseType[] = [
         },
         accessibility: { wheelchair_accessible: false },
         hygiene_features: {
-          sanitizer: true,
-          hygiene_kits: true,
-          digital_keys: false,
+          "sanitizer": true,
+          "hygiene_kits": true,
+          "digital_keys": false
         },
         last_updated: "2025-08-29T12:00:00Z",
       },

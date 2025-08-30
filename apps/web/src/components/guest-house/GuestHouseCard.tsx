@@ -34,7 +34,7 @@ export function GuestHouseCard({ guestHouse }: { guestHouse: GuestHouseType }) {
             </div>
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-2">
-            {guestHouse.about.description}
+            {guestHouse.about.description }
           </CardDescription>
         </CardHeader>
 

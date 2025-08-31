@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { requireAuth } from "@/lib/requireAuth";
 import prisma from "@/lib/prisma";
 
 export async function GET(
@@ -7,9 +6,6 @@ export async function GET(
   { params }: { params: Promise<{ guestHouseId: string }> }
 ) {
   const { guestHouseId } = await params;
-  const { session, response } = await requireAuth();
-
-  if (!session) return response!;
 
   try {
     const guestHouse = await prisma.guestHouse.findUnique({

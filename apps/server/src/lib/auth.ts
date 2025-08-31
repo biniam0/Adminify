@@ -16,24 +16,28 @@ export const auth = betterAuth({
           return {
             data: {
               ...user,
-              role: "GUEST", 
+              role: "GUEST",
             },
           };
         },
         after: async (user) => {
           console.log("New user created:", user.email, "with role:", user.role);
         },
-      }
-    }
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,
   },
   advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-      httpOnly: true,
+    useSecureCookies: true,
+    cookies: {
+      session_token: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+        },
+      },
     },
   },
   session: {

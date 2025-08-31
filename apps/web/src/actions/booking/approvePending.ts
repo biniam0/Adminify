@@ -8,14 +8,19 @@ export async function approvePendingBook(
   approve: boolean
 ) {
   try {
-    const cookieHeader = await cookies();
+    const cookieStore = await cookies();
+    const cookieString = cookieStore
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
     const status = approve ? "APPROVED" : "REJECTED";
 
     const res = await apiClient.patch(
       `/api/get-pending-books/${pendingBookId}`,
       { status },
       {
-        headers: { cookie: cookieHeader.toString() },
+        headers: { cookie: cookieString },
+        withCredentials: true,
       }
     );
     return res.data;

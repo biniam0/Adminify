@@ -6,9 +6,14 @@ export async function getGuestHouse(
   guestHouseId: string
 ): Promise<GuestHouseType | null> {
   try {
-    const cookieHeader = await cookies();
+    const cookieStore = await cookies();
+    const cookieString = cookieStore
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
     const res = await apiClient.get(`/api/get-guest-house/${guestHouseId}`, {
-      headers: { cookie: cookieHeader.toString() },
+      headers: { cookie: cookieString },
+      withCredentials: true,
     });
     return res.data;
   } catch (error) {

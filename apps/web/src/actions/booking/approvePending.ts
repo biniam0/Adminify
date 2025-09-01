@@ -1,31 +1,23 @@
 "use server";
 
 import { apiClient } from "@/lib/api-client";
-import { cookies } from "next/headers";
+import type { User } from "@/lib/auth-client";
 
 export async function approvePendingBook(
+  user: User,
   pendingBookId: string,
   approve: boolean
 ) {
   try {
-    const cookieStore = await cookies();
-    const cookieString = cookieStore
-      .getAll()
-      .map((c) => `${c.name}=${c.value}`)
-      .join("; ");
-    const status = approve ? "APPROVED" : "REJECTED";
+    const status = approve ? "APPROVED" : "REJECTED"
 
     const res = await apiClient.patch(
       `/api/get-pending-books/${pendingBookId}`,
-      { status },
-      {
-        headers: { cookie: cookieString },
-        withCredentials: true,
-      }
+      { status, user },
     );
     return res.data;
   } catch (error) {
-    console.error("Failed to create booking:", error);
+    console.error("Failed to approve booking:", error);
     return null;
   }
 }

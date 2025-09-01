@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { requireAuth } from "@/lib/requireAuth";
 import prisma from "@/lib/prisma";
 
 export async function PATCH(
@@ -7,12 +6,12 @@ export async function PATCH(
   { params }: { params: Promise<{ pendingBookId: string }> }
 ) {
   const { pendingBookId } = await params;
-  const { status } = await req.json();
-  const { session, response } = await requireAuth();
+  const { status, user } = await req.json();
 
-  if (!session) return response!;
+  // const { session, response } = await requireAuth();
+  // if (!session) return response!;
 
-  if (session.user.role !== "STAFF" && session.user.role !== "ADMIN") {
+  if (user.role !== "STAFF" && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -21,7 +20,7 @@ export async function PATCH(
       where: { id: pendingBookId },
       data: {
         status,
-        approvedById: session.user.id,
+        approvedById: user.id,
       },
       include: {
         user: true,

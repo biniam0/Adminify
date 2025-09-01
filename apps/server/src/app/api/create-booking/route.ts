@@ -3,15 +3,15 @@ import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/requireAuth";
 
 export async function POST(req: Request) {
+  const { data, user } = await req.json();
   const { session, response } = await requireAuth();
 
   if (!session) return response!;
 
   const autoApprove =
-    session.user.role === "STAFF" || session.user.role === "ADMIN";
+    user.role === "STAFF" || user.role === "ADMIN";
 
   try {
-    const data = await req.json();
     const booking = await prisma.booking.create({
       data: {
         userId: session.user.id,

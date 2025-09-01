@@ -1,6 +1,8 @@
 "use client";
 
+import { approvePendingBook } from "@/actions/booking/approvePending";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -10,11 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import type { User } from "@/lib/auth-client";
 import type { PendingBook } from "@/types/booking.type";
-import { approvePendingBook } from "@/actions/booking/approvePending";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function PendingBookTable({
   pendingBooks,
@@ -22,14 +25,21 @@ export default function PendingBookTable({
   pendingBooks: PendingBook[];
 }) {
   const router = useRouter();
+  const { session, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !session) {
+      router.push("/signin");
+    }
+  }, [session, router]);
 
   if (!pendingBooks || pendingBooks.length === 0) {
     return <p className="p-4 text-red-600">No pending bookings available!</p>;
   }
 
-  async function handleApproval(id: string, approve: boolean) {
+  async function handleApproval(user: User, id: string, approve: boolean) {
     try {
-      const res = await approvePendingBook(id, approve);
+      await approvePendingBook(user, id, approve);
 
       toast.success(
         approve ? "Booking approved successfully" : "Booking rejected"
@@ -78,14 +88,18 @@ export default function PendingBookTable({
                 <TableCell className="space-x-2">
                   <Button
                     size="sm"
-                    onClick={() => handleApproval(booking.id, true)}
+                    onClick={() =>
+                      handleApproval(session!.user, booking.id, true)
+                    }
                   >
                     Approve
                   </Button>
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => handleApproval(booking.id, false)}
+                    onClick={() =>
+                      handleApproval(session!.user, booking.id, false)
+                    }
                   >
                     Reject
                   </Button>

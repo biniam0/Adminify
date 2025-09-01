@@ -1,21 +1,24 @@
 model User {
-  id            String    @id @default(cuid())
+  id            String  @id @default(cuid())
   name          String
   email         String
   emailVerified Boolean
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  role          String    @default("GUEST")
-  banned        Boolean?
-  banReason     String?
-  banExpires    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role       String    @default("GUEST")
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime?
 
   sessions         Session[]
   accounts         Account[]
-  rooms            Room[]    @relation("OccupiedRooms")
+  rooms            Room[]     @relation("OccupiedRooms")
   bookings         Booking[]
-  approvedBookings Booking[] @relation("ApprovedBookings")
+  approvedBookings Booking[]  @relation("ApprovedBookings")
+  activity         Activity[]
 
   @@unique([email])
   @@map("user")
@@ -80,7 +83,12 @@ model GuestHouse {
   facilities String[] // [ "Free Wi-Fi", "Sea view", "Breakfast included", "Airport Shuttle", ]
   contact    Json // { phone: String, email: String }
 
-  rooms Room[]
+  rooms      Room[]
+  bookings   Booking[] // all bookings associated with this house
+  activities Activity[] // all actions related to this house
+  history    History[] // aggregated snapshots for this house
+
+  createdAt DateTime @default(now())
 }
 
 model About {
@@ -138,7 +146,8 @@ model Room {
   occupiedBy   User?   @relation("OccupiedRooms", fields: [occupiedById], references: [id], onDelete: Cascade)
   occupiedById String?
 
-  Booking Booking[]
+  Activity Activity[]
+  Booking  Booking[]
 }
 
 model Booking {
@@ -159,11 +168,88 @@ model Booking {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId String
-
   approvedBy   User?   @relation("ApprovedBookings", fields: [approvedById], references: [id])
   approvedById String?
+
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
+
+  GuestHouse   GuestHouse? @relation(fields: [guestHouseId], references: [id])
+  guestHouseId String?
+
+  activities Activity[]
+}
+
+model History {
+  id String @id @default(cuid())
+
+  date  DateTime @unique // Snapshot date (daily granularity)
+  year  Int
+  month Int
+  day   Int
+
+  totalRooms    Int // Total number of rooms available in the property (GuestHouse.rooms.count)
+  occupiedRooms Int // Number of rooms actually occupied on this day
+  occupancyRate Float // Formula: occupiedRooms / totalRooms * 100
+
+  totalReservations Int // Total number of reservations created on this day
+  totalIncome       Float // Total successful payments for bookings on this day (SUM of booking payments with status=SUCCESS)
+
+  averageDailyRate Float // ADR: Formula = totalIncome / occupiedRooms
+  revPAR           Float // Revenue per available room: Formula = totalIncome / totalRooms
+  totalProfit      Float // Revenue - expenses (if you track costs separately)
+  gopPAR           Float? // Gross Operating Profit per available room: Formula = totalProfit / totalRooms
+
+  averageLengthOfStay Float? // Formula: SUM(nights stayed per booking) / totalReservations
+  bookingPace         Int? // Number of new bookings made *today* for any future date
+  averageLeadTime     Float? // Formula: AVG(days between bookingDate and checkInDate)
+
+  directBookings Int?
+  otaBookings    Int?
+  groupBookings  Int?
+
+  avgRating Float? // Average rating of reviews submitted on this day
+  npsScore  Float? // Net Promoter Score (promoters - detractors) / total respondents * 100
+
+  guestHouseId String?
+  guestHouse   GuestHouse? @relation(fields: [guestHouseId], references: [id])
+
+  Activity Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("history")
+}
+
+model Activity {
+  id String @id @default(cuid())
+
+  action    ActivityAction
+  timestamp DateTime       @default(now())
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+  bookingId String?
+
+  room   Room?   @relation(fields: [roomId], references: [id])
+  roomId String?
+
+  guestHouse   GuestHouse? @relation(fields: [guestHouseId], references: [id])
+  guestHouseId String?
+
+  history   History? @relation(fields: [historyId], references: [id])
+  historyId String?
+
+  details   Json?
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@map("activity")
 }
 
 enum PaymentStatus {
@@ -195,4 +281,18 @@ enum EachRoomType {
   STUDIO
   EXECUTIVE
   PRESIDENTIAL
+}
+
+enum ActivityAction {
+  BOOKED
+  UPDATED_BOOKING
+  CANCELLED_BOOKING
+  APPROVED_BOOKING
+  REJECTED_BOOKING
+  CHECKED_IN
+  CHECKED_OUT
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  USER_BANNED
+  USER_UNBANNED
 }

@@ -1,12 +1,11 @@
-// context/AuthProvider.tsx
 "use client";
 
-import { getSession, revokeSession } from "@/lib/auth-client";
+import { getSession, revokeSession, type Session } from "@/lib/auth-client";
 import React, { useCallback, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
 
@@ -30,7 +29,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = useCallback(async () => {
     try {
-      await revokeSession({ token: session?.session?.id });
+      if (session?.session?.id) {
+        await revokeSession({ token: session.session.id });
+      }
       setSession(null);
     } catch (err) {
       console.error("Error signing out", err);

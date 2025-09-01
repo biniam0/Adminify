@@ -1,10 +1,10 @@
 import prisma from "@/lib/prisma";
-import { requireAuth } from "@/lib/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const { session, response } = await requireAuth();
-  if (!session) return response!;
+  // For temporary
+  // const { session, response } = await requireAuth();
+  // if (!session) return response!;
 
   try {
     const pendingBooks = await prisma.booking.findMany({

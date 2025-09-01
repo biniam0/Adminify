@@ -7,16 +7,26 @@ import {
   CheckCircle,
   CreditCard,
   MapPin,
+  Router,
   Star,
   Tv,
   Users,
   Wifi,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { Button } from "../ui/button";
 import type { BookingFormData } from "./BookRoomModal";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 interface PreviewBookModalProps {
   open: boolean;
@@ -41,6 +51,11 @@ export function PreviewBookModal({
   onBookingComplete,
 }: PreviewBookModalProps) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const router = useRouter();
+
+  const { session } = useAuth();
+
+  if (!session) router.push("/signin");
 
   const calculateBilling = (): BillingDetails => {
     if (!bookingData)
@@ -59,8 +74,7 @@ export function PreviewBookModal({
     const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
     const months = Math.ceil(days / 30);
 
-    const basePrice =
-      parseFloat(bookingData.room.price) || 1500;
+    const basePrice = parseFloat(bookingData.room.price) || 1500;
 
     const dailyRate = basePrice;
     const monthlyRate = Math.floor(basePrice * 25); // Approximately 25 days worth for monthly discount
@@ -92,13 +106,8 @@ export function PreviewBookModal({
     if (!bookingData) return;
 
     setIsProcessingPayment(true);
-
-    // Simulate payment processing
     toast.loading("Processing payment with Chapa...", { id: "payment" });
-
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Simulate success/failure (90% success rate)
     const isSuccess = Math.random() > 0.1;
 
     if (isSuccess) {
@@ -106,7 +115,6 @@ export function PreviewBookModal({
         id: "payment",
       });
 
-      // Create the actual booking
       try {
         const bookingPayload = {
           roomId: bookingData.room.id,
@@ -115,7 +123,7 @@ export function PreviewBookModal({
           guests: bookingData.guests,
         };
 
-        await createBooking(bookingPayload);
+        await createBooking(session!.user, bookingPayload);
 
         onBookingComplete();
       } catch (err) {

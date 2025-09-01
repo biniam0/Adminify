@@ -1,4 +1,3 @@
-import { getGuestHouses } from "@/actions/guestHouse/guestHouses";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,7 +19,6 @@ import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import type { GuestHouseType, RoomType } from "@/types/guest-room.type";
-import { PreviewBookModal } from "./PreviewBookModal";
 
 export type PaymentType = "daily" | "monthly";
 

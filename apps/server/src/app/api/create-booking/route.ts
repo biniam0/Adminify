@@ -1,35 +1,47 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { requireAuth } from "@/lib/requireAuth";
 
 export async function POST(req: Request) {
-  const { session, response } = await requireAuth();
+  const { data, user } = await req.json();
 
-  if (!session) return response!;
+  // const { session, response } = await requireAuth();
+  // if (!session) return response!;
 
-  const autoApprove =
-    session.user.role === "STAFF" || session.user.role === "ADMIN";
+  const autoApprove = user.role === "STAFF" || user.role === "ADMIN";
 
   try {
-    const data = await req.json();
     const booking = await prisma.booking.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         roomId: data.roomId,
         checkIn: new Date(data.checkIn),
         checkOut: new Date(data.checkOut),
         guests: data.guests,
         status: autoApprove ? "APPROVED" : "PENDING",
-        approvedById: autoApprove ? session.user.id : null,
+        approvedById: autoApprove ? user.id : null,
       },
     });
 
     if (autoApprove) {
       await prisma.room.update({
         where: { id: data.roomId },
-        data: { occupiedById: session.user.id, availability: false },
+        data: { occupiedById: user.id, availability: false },
       });
     }
+
+    await prisma.activity.create({
+      data: {
+        action: "BOOKED",
+        userId: user.id,
+        bookingId: booking.id,
+        roomId: data.roomId,
+        guestHouseId: data.guestHouseId,
+        details: {
+          autoApproved: autoApprove,
+          status: booking.status,
+        },
+      },
+    });
 
     return NextResponse.json(booking, { status: 201 });
   } catch (error: any) {

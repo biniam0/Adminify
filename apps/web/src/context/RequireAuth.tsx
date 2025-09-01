@@ -16,7 +16,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   }, [isLoading, session, pathname, router]);
 
   if (isLoading || (!session && pathname !== "/signin")) {
-    return null; // or a loader
+    return null;
   }
 
   return <>{children}</>;

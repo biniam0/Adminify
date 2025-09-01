@@ -106,10 +106,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Separator className="mt-3" />
       </SidebarHeader>
       <SidebarContent className="overflow-y-auto hide-scrollbar flex flex-col">
-        {overviewItems.length > 0 && <NavOverview items={overviewItems} />}
-        {managementItems.length > 0 && (
-          <NavManagement items={managementItems} />
-        )}
+        {<NavOverview items={overviewItems} />}
+        {<NavManagement items={managementItems} />}
         {role === "admin" && <NavCharts items={data.charts} />}
         {quickLinksItems.length > 0 && (
           <NavQuickLinks items={quickLinksItems} />
@@ -149,7 +147,7 @@ const data = {
   ],
   quickLinks: [
     { name: "Approve Booking", url: "/approve-booking", icon: IconReport },
-    { name: "Manage User | Coming Soon", url: "#", icon: IconFileWord },
+    { name: "Manage Staffs | Coming Soon", url: "#", icon: IconFileWord },
   ],
   navSecondary: [
     { title: "Settings | Coming Soon", url: "#", icon: IconSettings },

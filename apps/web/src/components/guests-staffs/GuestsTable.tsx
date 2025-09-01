@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuth } from "@/hooks/useAuth";
-import type { PendingBook } from "@/types/booking.type";
 import type { GuestWithBookings } from "@/types/guest-room.type";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -76,9 +75,9 @@ export default function GuestsTable({
                   </TableCell>
                   <TableCell>
                     {guest.role ? (
-                      <Button variant="outline">"Ban"</Button>
+                      <Button variant="outline">Ban</Button>
                     ) : (
-                      <Button variant="outline">"Permit"</Button>
+                      <Button variant="outline">Permit</Button>
                     )}
                   </TableCell>
                 </TableRow>

@@ -139,8 +139,8 @@ const data = {
     { name: "Add Guest Houses | Coming Soon", url: "#", icon: IconReport },
     { name: "List Rooms", url: "/rooms", icon: IconFileWord },
     { name: "Add Rooms | Coming Soon", url: "#", icon: IconFileWord },
-    { name: "Guests | Coming Soon", url: "#", icon: IconDatabase },
-    { name: "Staffs | Coming Soon", url: "#", icon: IconReport },
+    { name: "Guests", url: "/guests", icon: IconDatabase },
+    { name: "Staffs", url: "/staffs", icon: IconReport },
   ],
   charts: [
     { name: "Daily Bookings | Coming Soon", url: "#", icon: IconDatabase },

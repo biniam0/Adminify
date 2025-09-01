@@ -1,3 +1,5 @@
+import type { PendingBook } from "./booking.type";
+
 interface Contact {
   phone: string;
   email: string;
@@ -89,4 +91,19 @@ interface GuestHouseType {
   rooms?: RoomType[];
 }
 
-export type { GuestHouseType, RoomType, Contact };
+type GuestWithBookings = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string;
+  banned: boolean | null;
+  banReason: string | null;
+  banExpires: Date | null;
+  bookings: PendingBook[];
+};
+
+export type { GuestHouseType, RoomType, Contact, GuestWithBookings };

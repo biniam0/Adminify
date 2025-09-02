@@ -134,9 +134,9 @@ const data = {
   ],
   managements: [
     { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },
-    { name: "Add Guest Houses | Coming Soon", url: "#", icon: IconReport },
     { name: "List Rooms", url: "/rooms", icon: IconFileWord },
-    { name: "Add Rooms | Coming Soon", url: "#", icon: IconFileWord },
+    { name: "Guest Houses Management | Coming Soon", url: "#", icon: IconReport },
+    { name: "Rooms Management | Coming Soon", url: "#", icon: IconFileWord },
     { name: "Guests", url: "/guests", icon: IconDatabase },
     { name: "Staffs", url: "/staffs", icon: IconReport },
   ],

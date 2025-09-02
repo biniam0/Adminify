@@ -63,7 +63,7 @@ type RoomType = {
   last_updated: "2025-08-29T12:00:00Z";
 };
 
-type AboutType = {
+export type AboutType = {
   description: string;
   review: {
     averageRating: number;

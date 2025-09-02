@@ -6,6 +6,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://adminify-web.vercel.app",
   "https://adminify-app.onrender.com",
+  "https://adminify-api.onrender.com",
 ];
 
 export function middleware(req: NextRequest) {

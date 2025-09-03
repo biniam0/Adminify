@@ -28,6 +28,19 @@ export async function PATCH(
       },
     });
 
+    await prisma.activity.create({
+      data: {
+        action: status ? "APPROVED_BOOKING" : "REJECTED_BOOKING",
+        userId: user.id,
+        bookingId: booking.id,
+        roomId: booking.roomId,
+        guestHouseId: booking.guestHouseId,
+        details: {
+          status: booking.status,
+        },
+      },
+    });
+
     return NextResponse.json(booking, { status: 200 });
   } catch (error) {
     console.error("Error fetching guest house:", error);

@@ -33,3 +33,32 @@ export interface PendingBook {
   } | null;
   approvedById: string | null;
 }
+
+type ActivityAction = "BOOKED" | "APPROVED_BOOKING";
+
+export interface ActionType {
+  id: string;
+  action: ActivityAction;
+  timestamp: string;
+  userId: string;
+  bookingId: string;
+  roomId: string;
+  guestHouseId: string | null;
+  historyId: string | null;
+  details: {
+    status: "APPROVED" | "REJECTED";
+    autoApproved?: boolean;
+  };
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export interface BillingDetails {
+  days: number;
+  months: number;
+  dailyRate: number;
+  monthlyRate: number;
+  totalAmount: number;
+  discount: number;
+}

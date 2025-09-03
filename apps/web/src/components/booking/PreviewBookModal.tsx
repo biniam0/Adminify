@@ -7,7 +7,6 @@ import {
   CheckCircle,
   CreditCard,
   MapPin,
-  Router,
   Star,
   Tv,
   Users,
@@ -27,21 +26,13 @@ import type { BookingFormData } from "./BookRoomModal";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import type { BillingDetails } from "@/types/booking.type";
 
 interface PreviewBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bookingData: BookingFormData | null;
   onBookingComplete: () => void;
-}
-
-interface BillingDetails {
-  days: number;
-  months: number;
-  dailyRate: number;
-  monthlyRate: number;
-  totalAmount: number;
-  discount: number;
 }
 
 export function PreviewBookModal({
@@ -77,7 +68,7 @@ export function PreviewBookModal({
     const basePrice = parseFloat(bookingData.room.price) || 1500;
 
     const dailyRate = basePrice;
-    const monthlyRate = Math.floor(basePrice * 25); // Approximately 25 days worth for monthly discount
+    const monthlyRate = Math.floor(basePrice * 25);
 
     let totalAmount: number;
     let discount = 0;
@@ -106,7 +97,7 @@ export function PreviewBookModal({
     if (!bookingData) return;
 
     setIsProcessingPayment(true);
-    toast.loading("Processing payment with Chapa...", { id: "payment" });
+    toast.loading("Processing payment with Chapa...", { id: "payment" })
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const isSuccess = Math.random() > 0.1;
 
@@ -152,7 +143,6 @@ export function PreviewBookModal({
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Guest House Info */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <div className="flex items-start justify-between mb-2">
               <div>
@@ -178,7 +168,6 @@ export function PreviewBookModal({
             </Badge>
           </div>
 
-          {/* Room Info */}
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="flex items-start justify-between mb-2">
               <div>
@@ -225,7 +214,6 @@ export function PreviewBookModal({
             </div>
           </div>
 
-          {/* Booking Details */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Guest Name</span>
@@ -277,7 +265,6 @@ export function PreviewBookModal({
 
           <Separator />
 
-          {/* Billing Details */}
           <div className="space-y-2">
             <h4 className="font-semibold flex items-center gap-2">
               <CreditCard className="w-4 h-4" />

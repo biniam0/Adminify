@@ -130,7 +130,7 @@ const data = {
   overview: [
     { title: "Overview", url: "/overview", icon: IconLifebuoy },
     { title: "Total Income", url: "/total-income", icon: IconCurrencyDollar },
-    { title: "Available Rooms | Coming Soon", url: "#", icon: IconBuilding },
+    { title: "Available Rooms", url: "/rooms-analytic", icon: IconBuilding },
   ],
   managements: [
     { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },

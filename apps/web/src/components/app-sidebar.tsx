@@ -128,14 +128,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 const data = {
   overview: [
-    { title: "Total Reservation", url: "/", icon: IconLifebuoy },
-    { title: "Total Income | Coming Soon", url: "#", icon: IconCurrencyDollar },
-    { title: "Available Rooms | Coming Soon", url: "#", icon: IconBuilding },
+    { title: "Overview", url: "/overview", icon: IconLifebuoy },
+    { title: "Total Income", url: "/total-income", icon: IconCurrencyDollar },
+    { title: "Available Rooms", url: "/rooms-analytic", icon: IconBuilding },
   ],
   managements: [
     { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },
     { name: "List Rooms", url: "/rooms", icon: IconFileWord },
-    { name: "Guest Houses Management | Coming Soon", url: "#", icon: IconReport },
+    {
+      name: "Guest Houses Management | Coming Soon",
+      url: "#",
+      icon: IconReport,
+    },
     { name: "Rooms Management | Coming Soon", url: "#", icon: IconFileWord },
     { name: "Guests", url: "/guests", icon: IconDatabase },
     { name: "Staffs", url: "/staffs", icon: IconReport },

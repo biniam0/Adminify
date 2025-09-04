@@ -10,12 +10,44 @@ export async function POST(req: Request) {
   const autoApprove = user.role === "STAFF" || user.role === "ADMIN";
 
   try {
+    // Fetch room details to calculate pricing
+    const room = await prisma.room.findUnique({
+      where: { id: data.roomId },
+      select: {
+        price: true,
+        name: true,
+        guestHouse: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+
+    if (!room) {
+      return NextResponse.json(
+        { error: "Room not found" },
+        { status: 404 }
+      );
+    }
+
+    // Calculate booking duration and total amount
+    const checkInDate = new Date(data.checkIn);
+    const checkOutDate = new Date(data.checkOut);
+    const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+    const baseAmount = room.price * nights;
+    
+    // Add any additional fees (you can customize these)
+    const serviceFee = baseAmount * 0.1; // 10% service fee
+    const taxes = baseAmount * 0.08; // 8% tax
+    const totalAmount = baseAmount + serviceFee + taxes;
+
     const booking = await prisma.booking.create({
       data: {
         userId: user.id,
         roomId: data.roomId,
-        checkIn: new Date(data.checkIn),
-        checkOut: new Date(data.checkOut),
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
         guests: data.guests,
         status: autoApprove ? "APPROVED" : "PENDING",
         approvedById: autoApprove ? user.id : null,
@@ -29,6 +61,7 @@ export async function POST(req: Request) {
       });
     }
 
+    // Create activity with comprehensive income and booking details
     await prisma.activity.create({
       data: {
         action: "BOOKED",
@@ -39,11 +72,37 @@ export async function POST(req: Request) {
         details: {
           autoApproved: autoApprove,
           status: booking.status,
+          // Income-related data
+          amount: totalAmount,
+          baseAmount: baseAmount,
+          serviceFee: serviceFee,
+          taxes: taxes,
+          price: room.price,
+          nights: nights,
+          // Booking details
+          guests: data.guests,
+          roomName: room.name,
+          guestHouseName: room.guestHouse.name,
+          checkIn: checkInDate.toISOString(),
+          checkOut: checkOutDate.toISOString(),
+          // Payment status (you can update this when payment is processed)
+          paymentStatus: "PENDING", // or "PAID", "FAILED", etc.
+          currency: "USD", // or your preferred currency
         },
       },
     });
 
-    return NextResponse.json(booking, { status: 201 });
+    return NextResponse.json({
+      ...booking,
+      totalAmount,
+      breakdown: {
+        baseAmount,
+        serviceFee,
+        taxes,
+        nights,
+        pricePerNight: room.price
+      }
+    }, { status: 201 });
   } catch (error: any) {
     console.error("Error while booking:", error);
     return NextResponse.json(

@@ -40,7 +40,7 @@ export function NavOverview({
             </Button>
           </SidebarMenuItem>
         </SidebarMenu> */}
-        <SidebarGroupLabel>Overview</SidebarGroupLabel>
+        <SidebarGroupLabel>Analytics</SidebarGroupLabel>
         <SidebarMenu>
           {items.map((item) => {
             const Icon = item.icon;

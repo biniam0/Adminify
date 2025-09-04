@@ -129,7 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 const data = {
   overview: [
     { title: "Overview", url: "/overview", icon: IconLifebuoy },
-    { title: "Total Income | Coming Soon", url: "#", icon: IconCurrencyDollar },
+    { title: "Total Income", url: "/total-income", icon: IconCurrencyDollar },
     { title: "Available Rooms | Coming Soon", url: "#", icon: IconBuilding },
   ],
   managements: [

@@ -48,6 +48,7 @@ export interface ActionType {
   details: {
     status: "APPROVED" | "REJECTED";
     autoApproved?: boolean;
+    amount: number;
   };
   ipAddress: string | null;
   userAgent: string | null;

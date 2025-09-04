@@ -17,6 +17,7 @@ import {
 } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { getActivity } from "@/actions/analytics/getActivity";
+import { getActivityDateRange } from "@/utils/getActivityDateRange";
 
 const SectionCards = async () => {
   const activities = await getActivity();
@@ -57,9 +58,7 @@ const SectionCards = async () => {
             Real-time insights from your booking activities
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Total Bookings */}
           <Card>
             <CardHeader>
               <CardDescription>Total Bookings</CardDescription>
@@ -79,7 +78,7 @@ const SectionCards = async () => {
                 <Calendar className="w-4 h-4" />
               </div>
               <div className="text-gray-500 dark:text-gray-400">
-                Sept 1-3, 2025 activity
+                {getActivityDateRange(activities)}
               </div>
             </CardFooter>
           </Card>
@@ -103,7 +102,7 @@ const SectionCards = async () => {
               </CardAction>
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
-              <div className="flex items-center gap-2 font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center gap-2 font-medium">
                 {approvalRate >= 50
                   ? "Strong approval rate"
                   : "Needs attention"}
@@ -139,7 +138,7 @@ const SectionCards = async () => {
                 Individual booking users
                 <Users className="w-4 h-4" />
               </div>
-              <div className="text-gray-500 dark:text-gray-400">
+              <div>
                 {uniqueRooms} room{uniqueRooms !== 1 ? "s" : ""} in demand
               </div>
             </CardFooter>
@@ -171,7 +170,6 @@ const SectionCards = async () => {
             </CardFooter>
           </Card>
         </div>
-
         {/* Activity Timeline Summary */}
         <div className="mt-8">
           <Card>
@@ -185,34 +183,26 @@ const SectionCards = async () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                 <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {
-                      activities.filter(
-                        (a) => new Date(a.timestamp).getDate() === 1
-                      ).length
-                    }
+                    {totalBookings}
                   </div>
                   <div className="text-sm text-blue-600 dark:text-blue-400">
-                    Sept 1st Activities
+                    Total Bookings
                   </div>
                 </div>
                 <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {
-                      activities.filter(
-                        (a) => new Date(a.timestamp).getDate() === 3
-                      ).length
-                    }
+                    {approvedBookings}
                   </div>
                   <div className="text-sm text-green-600 dark:text-green-400">
-                    Sept 3rd Activities
+                    Approved Bookings
                   </div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                   <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                    {new Set(activities.map((a) => a.bookingId)).size}
+                    {uniqueUsers}
                   </div>
                   <div className="text-sm text-purple-600 dark:text-purple-400">
-                    Unique Bookings
+                    Active Users
                   </div>
                 </div>
               </div>

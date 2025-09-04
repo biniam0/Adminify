@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import type { ActionType } from "@/types/booking.type";
@@ -9,16 +11,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
 
 interface IncomeByDate {
   [key: string]: number;
 }
 
-const IncomeAnalytics = ({
-  activities,
-}: {
-  activities: ActionType[];
-}) => {
+const IncomeAnalytics = ({ activities }: { activities: ActionType[] }) => {
   // Calculate total income from activities - only from approved bookings
   const totalIncome = activities.reduce((sum, activity) => {
     if (
@@ -68,17 +77,19 @@ const IncomeAnalytics = ({
         100
       : 0;
 
+  const chartData = Object.entries(incomeByDate)
+    .map(([date, income]) => ({
+      date,
+      income,
+    }))
+    .sort(
+      (a, b) =>
+        new Date(a.date + " 2024").getTime() -
+        new Date(b.date + " 2024").getTime()
+    );
+
   return (
-    <div className="flex flex-col space-y-6 p-4">
-      {/* Income Summary Card */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Analytics Overview
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Real-time insights from your booking activities
-        </p>
-      </div>
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardDescription>Total Income</CardDescription>
@@ -197,6 +208,34 @@ const IncomeAnalytics = ({
                 Approved bookings will appear here once processed
               </p>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {activeDays > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Income Chart</CardTitle>
+            <CardDescription>
+              Visual trend of approved booking income
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="income"
+                  stroke="#16a34a" // green-600
+                  strokeWidth={3}
+                  dot={{ r: 5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       )}

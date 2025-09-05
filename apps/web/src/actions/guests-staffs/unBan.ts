@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 
-export async function unBanGuest({
+export async function unBan({
   userId,
 }: {
   userId: string;

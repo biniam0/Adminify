@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 
-export async function banGuest({
+export async function ban({
   userId,
   banReason,
   banExpiresIn,

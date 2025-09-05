@@ -17,8 +17,8 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { banGuest } from "@/actions/guests-staffs/banGuest";
-import { unBanGuest } from "@/actions/guests-staffs/unBanGuest";
+import { ban } from "@/actions/guests-staffs/ban";
+import { unBan } from "@/actions/guests-staffs/unBan";
 import { toast } from "sonner";
 
 export default function GuestsTable({
@@ -29,9 +29,9 @@ export default function GuestsTable({
   const router = useRouter();
   const { session, isLoading } = useAuth();
 
-  const handleGuestBan = async (userId: string, banReason: string) => {
+  const handleBan = async (userId: string, banReason: string) => {
     try {
-      await banGuest({ userId, banReason });
+      await ban({ userId, banReason });
       toast.success("Guest banned successfully!");
       router.refresh();
     } catch (error: any) {
@@ -39,9 +39,9 @@ export default function GuestsTable({
       toast.error(error?.message || "Failed to ban guest");
     }
   };
-  const handleGuestUnBan = async (userId: string) => {
+  const handleUnBan = async (userId: string) => {
     try {
-      await unBanGuest({ userId });
+      await unBan({ userId });
       toast.success("Guest unbanned successfully!");
       router.refresh();
     } catch (error: any) {
@@ -139,7 +139,7 @@ export default function GuestsTable({
                     {guest.banned ? (
                       <Button
                         variant="outline"
-                        onClick={() => session && handleGuestUnBan(guest.id)}
+                        onClick={() => session && handleUnBan(guest.id)}
                       >
                         Unban
                       </Button>
@@ -147,7 +147,7 @@ export default function GuestsTable({
                       <Button
                         variant="destructive"
                         onClick={() =>
-                          session && handleGuestBan(guest.id, "Spamming")
+                          session && handleBan(guest.id, "Spamming")
                         }
                       >
                         Ban

@@ -17,6 +17,9 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { IconCheck, IconX } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { ban } from "@/actions/guests-staffs/ban";
+import { unBan } from "@/actions/guests-staffs/unBan";
 
 export default function StaffsTable({
   staffs,
@@ -25,6 +28,27 @@ export default function StaffsTable({
 }) {
   const router = useRouter();
   const { session, isLoading } = useAuth();
+
+  const handleBan = async (userId: string, banReason: string) => {
+    try {
+      await ban({ userId, banReason });
+      toast.success("Guest banned successfully!");
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error while banning guest:", error);
+      toast.error(error?.message || "Failed to ban guest");
+    }
+  };
+  const handleUnBan = async (userId: string) => {
+    try {
+      await unBan({ userId });
+      toast.success("Guest unbanned successfully!");
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error while unbanning guest:", error);
+      toast.error(error?.message || "Failed to unban guest");
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !session) {
@@ -110,9 +134,21 @@ export default function StaffsTable({
                   </TableCell>
                   <TableCell>
                     {staff.banned ? (
-                      <Button variant="outline">Unban</Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => session && handleUnBan(staff.id)}
+                      >
+                        Unban
+                      </Button>
                     ) : (
-                      <Button variant="destructive">Ban</Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() =>
+                          session && handleBan(staff.id, "Spamming")
+                        }
+                      >
+                        Ban
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

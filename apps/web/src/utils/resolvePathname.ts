@@ -4,13 +4,9 @@ export function resolvePathname(pathname: string): string {
   if (segments.length === 0) return "Dashboard";
 
   const map: Record<string, string> = {
-    analytics: "Analytics",
     overview: "Overview",
     "rooms-analytic": "Rooms Analytics",
     "total-income": "Total Income",
-    auth: "Authentication",
-    signin: "Sign In",
-    main: "Main",
     "approve-booking": "Approve Booking",
     "guest-houses": "Guest Houses",
     guests: "Guests",

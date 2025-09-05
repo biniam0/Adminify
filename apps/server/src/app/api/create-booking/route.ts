@@ -61,7 +61,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Create activity with comprehensive income and booking details
     await prisma.activity.create({
       data: {
         action: "BOOKED",
@@ -72,22 +71,19 @@ export async function POST(req: Request) {
         details: {
           autoApproved: autoApprove,
           status: booking.status,
-          // Income-related data
           amount: totalAmount,
           baseAmount: baseAmount,
           serviceFee: serviceFee,
           taxes: taxes,
           price: room.price,
           nights: nights,
-          // Booking details
           guests: data.guests,
           roomName: room.name,
           guestHouseName: room.guestHouse.name,
           checkIn: checkInDate.toISOString(),
           checkOut: checkOutDate.toISOString(),
-          // Payment status (you can update this when payment is processed)
-          paymentStatus: "PENDING", // or "PAID", "FAILED", etc.
-          currency: "USD", // or your preferred currency
+          paymentStatus: "PENDING", 
+          currency: "ETB", 
         },
       },
     });
@@ -104,7 +100,7 @@ export async function POST(req: Request) {
       }
     }, { status: 201 });
   } catch (error: any) {
-    console.error("Error while booking:", error);
+    console.error("Error while create booking:", error);
     return NextResponse.json(
       { error: "Failed to create booking" },
       { status: 500 }

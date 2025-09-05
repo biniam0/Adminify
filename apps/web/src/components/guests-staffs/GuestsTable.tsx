@@ -13,10 +13,13 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import type { GuestWithBookings } from "@/types/guest-room.type";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { IconCheck, IconX } from "@tabler/icons-react";
+import { banGuest } from "@/actions/guests-staffs/banGuest";
+import { unBanGuest } from "@/actions/guests-staffs/unBanGuest";
+import { toast } from "sonner";
 
 export default function GuestsTable({
   guests,
@@ -25,6 +28,27 @@ export default function GuestsTable({
 }) {
   const router = useRouter();
   const { session, isLoading } = useAuth();
+
+  const handleGuestBan = async (userId: string, banReason: string) => {
+    try {
+      await banGuest({ userId, banReason });
+      toast.success("Guest banned successfully!");
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error while banning guest:", error);
+      toast.error(error?.message || "Failed to ban guest");
+    }
+  };
+  const handleGuestUnBan = async (userId: string) => {
+    try {
+      await unBanGuest({ userId });
+      toast.success("Guest unbanned successfully!");
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error while unbanning guest:", error);
+      toast.error(error?.message || "Failed to unban guest");
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !session) {
@@ -106,16 +130,28 @@ export default function GuestsTable({
                         ).toLocaleDateString()} → ${new Date(
                           latestBooking.checkOut
                         ).toLocaleDateString()}`
-                      : "—"}
+                      : "No Booking"}
                   </TableCell>
                   <TableCell>
                     {new Date(guest.createdAt).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
                     {guest.banned ? (
-                      <Button variant="outline">Unban</Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => session && handleGuestUnBan(guest.id)}
+                      >
+                        Unban
+                      </Button>
                     ) : (
-                      <Button variant="destructive">Ban</Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() =>
+                          session && handleGuestBan(guest.id, "Spamming")
+                        }
+                      >
+                        Ban
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>

@@ -103,7 +103,7 @@ export default function StaffsTable({
                         ).toLocaleDateString()} → ${new Date(
                           latestBooking.checkOut
                         ).toLocaleDateString()}`
-                      : "—"}
+                      : "No Booking"}
                   </TableCell>
                   <TableCell>
                     {new Date(staff.createdAt).toLocaleDateString()}

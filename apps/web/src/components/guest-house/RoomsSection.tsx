@@ -1,16 +1,18 @@
 import type { RoomType } from "@/types/guest-room.type";
 import { Card } from "../ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "../ui/table";
 import { Badge } from "../ui/badge";
+import { useRouter } from "next/navigation";
 
 export const RoomsSection = ({ rooms }: { rooms?: RoomType[] }) => {
+  const router = useRouter();
   if (!rooms || rooms.length === 0) {
     return (
       <div className="text-center py-12">
@@ -23,7 +25,9 @@ export const RoomsSection = ({ rooms }: { rooms?: RoomType[] }) => {
             <path d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z" />
           </svg>
         </div>
-        <p className="text-muted-foreground">No rooms available at the moment</p>
+        <p className="text-muted-foreground">
+          No rooms available at the moment
+        </p>
       </div>
     );
   }
@@ -54,12 +58,16 @@ export const RoomsSection = ({ rooms }: { rooms?: RoomType[] }) => {
               <TableRow
                 key={room.id}
                 className="hover:bg-muted/30 transition-colors border-b border-border/50 last:border-b-0"
+                onClick={() => router.push(`/rooms/${room.id}`)}
               >
                 <TableCell className="font-medium text-foreground">
                   {room.name}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-sm border-border text-muted-foreground">
+                  <Badge
+                    variant="outline"
+                    className="text-sm border-border text-muted-foreground"
+                  >
                     {room.type}
                   </Badge>
                 </TableCell>

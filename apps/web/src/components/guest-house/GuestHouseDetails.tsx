@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 const GuestHouseDetails = ({ guestHouse }: { guestHouse: GuestHouseType }) => {
-  const { session } = useAuth();
+  const { session, isLoading } = useAuth();
   const router = useRouter();
 
   const handleGuestHouseDelete = async (
@@ -44,10 +44,10 @@ const GuestHouseDetails = ({ guestHouse }: { guestHouse: GuestHouseType }) => {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (!isLoading && !session) {
       router.push("/signin");
     }
-  });
+  }, [isLoading, session, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -79,7 +79,7 @@ const GuestHouseDetails = ({ guestHouse }: { guestHouse: GuestHouseType }) => {
           <ImageGallery images={guestHouse.images} />
         </div>
 
-        {session!.user.role === "ADMIN" && (
+        {session?.user.role === "ADMIN" && (
           <div className="flex justify-center gap-4">
             <Button
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 border-0"

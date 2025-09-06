@@ -105,89 +105,124 @@ Once setup is complete, you can verify the installation by:
 2. **Database Connection:** Run `pnpm db:studio` to ensure database connectivity
 3. **Authentication:** The auth endpoints should be available at `http://localhost:3000/api/auth/`
 
-# 📡 API Endpoint Documentation
 
-All backend routes are prefixed with `/api`.
-Responses are in JSON format.
+# 📡 API Endpoint Documentation**
 
----
+All backend routes are prefixed with `/api`. Responses are in JSON format.
 
-### 🔑 Authentication
-
-#### `POST /api/auth/[...all]`
+## **🔑 Authentication**
+`POST /api/auth/[...all]`
 
 Handles authentication (login, signup, logout, etc.).
-
 * **Body:** depends on auth flow (email/password, etc.).
 
----
+## **📅 Booking**
 
-### 📅 Booking
-
-#### `POST /api/create-booking`
+### Create Booking
+`POST /api/create-booking`
 
 Create a new booking.
-**Body Example:**
 
+**Body Example:**
 ```json
 {
-  "user": User,
-  "data": Object {}
+  "data": {
+    "roomId": "string",
+    "checkIn": "string", 
+    "checkOut": "string",
+    "guests": "number"
+  },
+  "user": {
+    "id": "string",
+    "email": "string",
+    "emailVerified": "boolean",
+    "name": "string",
+    "createdAt": "Date",
+    "updatedAt": "Date",
+    "image": "string | null | undefined",
+    "banned": "boolean | null | undefined", 
+    "role": "string | null | undefined",
+    "banReason": "string | null | undefined",
+    "banExpires": "Date | null | undefined"
+  }
 }
 ```
 
-#### `GET /api/get-pending-books`
+### Get Pending Bookings
+`GET /api/get-pending-books`
 
 Retrieve all pending bookings.
 
-#### `GET /api/get-pending-books/[pendingBookId]`
+### Approve/Reject Booking
+`PATCH /api/get-pending-books/[bookingId]`
 
-Retrieve details of a specific pending booking.
+Approve or reject a specific pending booking.
 
----
+**Body Example:**
+```json
+{
+  "status": true,
+  "user": {
+    "id": "string",
+    "email": "string",
+    "emailVerified": "boolean",
+    "name": "string",
+    "createdAt": "Date", 
+    "updatedAt": "Date",
+    "image": "string | null | undefined",
+    "banned": "boolean | null | undefined",
+    "role": "string | null | undefined",
+    "banReason": "string | null | undefined", 
+    "banExpires": "Date | null | undefined"
+  }
+}
+```
 
-### 🏠 Guest Houses
+## **🏠 Guest Houses**
 
-#### `GET /api/get-guest-houses`
+### Get All Guest Houses
+`GET /api/get-guest-houses`
 
 Retrieve all guest houses.
 
-#### `GET /api/get-guest-house/[guestHouseId]`
+### Get Single Guest House  
+`GET /api/get-guest-house/[guestHouseId]`
 
 Retrieve details of a specific guest house.
 
----
+## **🚪 Rooms**
 
-### 👤 Guests
-
-#### `GET /api/get-guests`
-
-Retrieve all guests.
-
----
-
-### 👥 Staffs
-
-#### `GET /api/get-staffs`
-
-Retrieve all staff members.
-
----
-
-### 🚪 Rooms
-
-#### `GET /api/get-rooms`
+### Get All Rooms
+`GET /api/get-rooms`
 
 Retrieve all rooms.
 
-#### `GET /api/get-room/[roomId]`
+### Get Single Room
+`GET /api/get-room/[roomId]`
 
 Retrieve details of a specific room.
 
-## Notes
+## **👤 Guests**
+
+### Get All Guests
+`GET /api/get-guests`
+
+Retrieve all guests.
+
+## **👥 Staffs**
+
+### Get All Staff Members
+`GET /api/get-staffs`
+
+Retrieve all staff members.
+
+## **📝 Notes**
 
 * The project uses Turborepo for optimized monorepo builds
-* Environment variables are loaded automatically via dotenv configuration
+* Environment variables are loaded automatically via dotenv configuration  
 * The backend runs on **port 3000**, while the frontend runs on **port 3001**
 * All database operations use Prisma ORM
-* CORS is configured to allow credentials and supports `GET`, `POST`, and `OPTIONS`
+* CORS is configured to allow credentials and supports `GET`, `POST`, `PATCH`, and `OPTIONS` methods
+* All endpoints expect proper authentication where applicable
+* Date fields should be in ISO 8601 format
+* UUIDs are used for resource identification

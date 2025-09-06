@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -27,20 +27,37 @@ import {
   type GuestHouseFormData,
 } from "@/schema/guestHouseSchema";
 import { Card } from "../ui/card";
+import { createGuestHouse } from "@/actions/guestHouse/createGuestHouse";
+import type { GuestHouseType } from "@/types/guest-room.type";
 
 const GuestHouseForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
   const form = useForm<GuestHouseFormData>({
     resolver: zodResolver(guestHouseSchema),
     defaultValues: {
       name: "",
       address: "",
-      type: "SHARED",
+      type: "SHARED" as const,
       images: [],
       facilities: [],
       contact: {
         phone: "",
         email: "",
       },
+      location: {
+        continent: "",
+        country: "",
+        city: "",
+        subcity: "",
+        nearby: "",
+      },
+      about: {
+        description: "",
+      },
+      feedback: [],
     },
   });
 
@@ -61,19 +78,75 @@ const GuestHouseForm = () => {
     remove: removeFeedback,
   } = useFieldArray({
     control: form.control,
-    name: "feedbacks",
+    name: "feedback",
   });
 
-  function onSubmit(values: GuestHouseFormData) {
-    console.log("GuestHouse Payload:", values);
-    // send values to API
-  }
+  const onSubmit = async (values: GuestHouseFormData) => {
+    console.log("Form submission started", values); // Debug log
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
+    try {
+      // Validate the data before submitting
+      const validatedData = guestHouseSchema.parse(values);
+      console.log("Data validated successfully", validatedData); // Debug log
+
+      const result = await createGuestHouse(validatedData as any); // Type assertion for now
+      console.log("Guest house creation result", result); // Debug log
+
+      if (result) {
+        setSubmitSuccess(true);
+        // Optional: Reset form after successful submission
+        // form.reset();
+      } else {
+        setSubmitError("Failed to create guest house. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error while creating guest house: ", error);
+
+      // Set user-friendly error message
+      if (error instanceof Error) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Debug function to check form state
+  const handleDebugClick = () => {
+    console.log("Current form values:", form.getValues());
+    console.log("Form errors:", form.formState.errors);
+    console.log("Form is valid:", form.formState.isValid);
+  };
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Guests</h2>
+
+      {/* Debug Panel */}
+      <div className="mb-4 p-2 bg-gray-100 rounded">
+        <Button type="button" variant="outline" onClick={handleDebugClick}>
+          Debug Form State
+        </Button>
+        {submitError && (
+          <div className="mt-2 p-2 bg-red-100 text-red-700 rounded">
+            Error: {submitError}
+          </div>
+        )}
+        {submitSuccess && (
+          <div className="mt-2 p-2 bg-green-100 text-green-700 rounded">
+            Guest house created successfully!
+          </div>
+        )}
+      </div>
+
       <Card className="flex flex-col p-6 space-y-4 rounded-lg shadow-md gap-0">
-        <Form {...form}>
+        <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* --- Basic Info --- */}
             <FormField
@@ -252,6 +325,18 @@ const GuestHouseForm = () => {
                   value={facilityInput}
                   onChange={(e) => setFacilityInput(e.target.value)}
                   placeholder="Add facility"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (facilityInput.trim()) {
+                        form.setValue("facilities", [
+                          ...form.getValues("facilities"),
+                          facilityInput.trim(),
+                        ]);
+                        setFacilityInput("");
+                      }
+                    }
+                  }}
                 />
                 <Button
                   type="button"
@@ -346,7 +431,7 @@ const GuestHouseForm = () => {
                   <div key={field.id} className="flex gap-2">
                     <FormField
                       control={form.control}
-                      name={`feedbacks.${index}.message`}
+                      name={`feedback.${index}.message`}
                       render={({ field }) => (
                         <FormItem className="flex-1">
                           <FormControl>
@@ -358,7 +443,7 @@ const GuestHouseForm = () => {
                     />
                     <FormField
                       control={form.control}
-                      name={`feedbacks.${index}.rating`}
+                      name={`feedback.${index}.rating`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -396,12 +481,14 @@ const GuestHouseForm = () => {
               </div>
             </FormItem>
 
-            <Button type="submit">Create Guest House</Button>
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Creating..." : "Create Guest House"}
+            </Button>
           </form>
-        </Form>
+        </FormProvider>
       </Card>
     </div>
   );
-}
+};
 
-export default GuestHouseForm
+export default GuestHouseForm;

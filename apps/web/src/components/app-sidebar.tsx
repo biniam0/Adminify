@@ -136,8 +136,8 @@ const data = {
     { name: "List Guest Houses", url: "/guest-houses", icon: IconDatabase },
     { name: "List Rooms", url: "/rooms", icon: IconFileWord },
     {
-      name: "Guest Houses Management | Coming Soon",
-      url: "#",
+      name: "Add New Guest House",
+      url: "/create-guest-house",
       icon: IconReport,
     },
     { name: "Rooms Management | Coming Soon", url: "#", icon: IconFileWord },

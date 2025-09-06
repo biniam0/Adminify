@@ -10,6 +10,7 @@ export function resolvePathname(pathname: string): string {
     "approve-booking": "Approve Booking",
     "guest-houses": "Guest Houses",
     guests: "Guests",
+    "create-guest-house": "Create Guest House",
     rooms: "Rooms",
     staffs: "Staffs",
   };

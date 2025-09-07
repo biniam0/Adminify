@@ -38,14 +38,14 @@ export const AboutSection = ({
         </h3>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <StarRating rating={Math.round(about.review.averageRating)} />
+            <StarRating rating={Math.round(about.review?.averageRating ?? 0)} />
             <span className="text-lg font-semibold text-foreground">
-              {about.review.averageRating.toFixed(1)}
+              {about.review?.averageRating?.toFixed(1) ?? 0}
             </span>
           </div>
           <div className="flex items-center gap-1 text-muted-foreground">
             <Users size={16} />
-            <span>{about.review.totalReviewers} reviews</span>
+            <span>{about.review?.totalReviewers ?? 0} reviews</span>
           </div>
         </div>
       </div>

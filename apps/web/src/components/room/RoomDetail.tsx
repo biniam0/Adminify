@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { RoomType } from "@/types/guest-room.type";
-import Image from "next/image";
 import {
   Tv,
   ShowerHead,
@@ -20,10 +19,18 @@ import {
   Accessibility,
   Fan,
   Martini,
+  Edit,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 import { ImageGallery } from "../guest-house/ImageGallery";
 import { useState } from "react";
 import { BookRoomPage } from "./BookRoomPage";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import type { Session } from "@/lib/auth-client";
+import { deleteRoom } from "@/actions/rooms/deleteRoom";
 
 interface RoomCardProps {
   room: RoomType;
@@ -46,11 +53,65 @@ export function RoomDetail({ room }: RoomCardProps) {
     hygiene_features,
   } = room;
   const [modalOpen, setModalOpen] = useState(false);
+  const { session } = useAuth();
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleRoomDelete = async (roomId: string, session: Session) => {
+    try {
+      setIsDeleting(true);
+      const deleted = await deleteRoom(roomId, session.user);
+
+      toast.success("Room deleted successfully!");
+      router.push("/rooms");
+    } catch (error) {
+      console.error("Error deleting room:", error);
+      toast.error("An error occurred while deleting. Please try again later.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
       <Card className="w-full rounded-2xl border-none shadow-sm overflow-hidden mt-4 px-10">
         <ImageGallery images={images} />
+
+        {session?.user.role === "ADMIN" && (
+          <div className="flex justify-center gap-4 mb-4">
+            <Button
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 border-0"
+              onClick={() => {
+                setIsEditing(true);
+                toast.message("Coming soon!");
+                setTimeout(() => setIsEditing(false), 1000);
+              }}
+              disabled={isEditing || isDeleting} // disable while loading
+            >
+              {isEditing ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Edit className="h-4 w-4 mr-2" />
+              )}
+              Edit Room
+            </Button>
+
+            <Button
+              variant="destructive"
+              className="px-6 py-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              onClick={() => session && handleRoomDelete(room.id, session)}
+              disabled={isDeleting || isEditing} // disable while loading
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4 mr-2" />
+              )}
+              Delete Room
+            </Button>
+          </div>
+        )}
 
         <CardHeader className="px-6 pt-4">
           <CardTitle className="text-2xl font-bold">{name}</CardTitle>

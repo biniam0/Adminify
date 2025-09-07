@@ -29,7 +29,7 @@ export function ImageSlider({
         loop={images.length > 1}
         className="w-full h-full rounded-t-lg guest-house-swiper"
       >
-        {images.map((img, idx) => (
+        {images && images.map((img, idx) => (
           <SwiperSlide
             key={`${img.url}-${idx}`}
             className="relative w-full h-full"

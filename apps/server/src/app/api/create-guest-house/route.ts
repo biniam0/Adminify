@@ -4,10 +4,6 @@ import prisma from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const values = await req.json();
-    console.log("Received request body:", values);
-
-    console.log("Processing values:", values);
-
     if (!values || !values.name) {
       return NextResponse.json(
         { error: "Missing required data" },

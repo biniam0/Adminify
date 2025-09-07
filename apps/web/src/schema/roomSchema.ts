@@ -17,12 +17,14 @@ export const roomSchema = z.object({
   ]),
   price: z.number().min(1, "Price must be greater than 0"),
   description: z.string().min(5, "Description is required"),
-  images: z.array(
-    z.object({
-      url: z.string().url("Invalid URL"),
-      name: z.string().min(1, "Image name required"),
-    })
-  ),
+  images: z
+    .array(
+      z.object({
+        url: z.string().url("Invalid URL"),
+        name: z.string().min(1, "Image name required"),
+      })
+    )
+    .min(1, "At least one image is required"),
   availability: z.boolean(),
   square_meters: z.number().min(1, "Square meters required"),
   max_occupancy: z.number().min(1, "Max occupancy required"),

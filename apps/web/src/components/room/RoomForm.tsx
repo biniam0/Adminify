@@ -4,8 +4,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -13,16 +13,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Checkbox } from "../ui/checkbox";
+} from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../ui/select";
-import { Input } from "../ui/input";
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import {
   roomSchema,
   type BedKey,
@@ -32,13 +32,7 @@ import {
   type RoomFormData,
 } from "@/schema/roomSchema";
 import type { GuestHouseType } from "@/types/guest-room.type";
-import { Label } from "../ui/label";
-
-const createRoom = async (data: RoomFormData) => {
-  console.log("Creating room:", data);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, id: Math.random().toString() };
-};
+import { createRoom } from "@/actions/rooms/createRoom";
 
 interface RoomFormProps {
   guestHouses: GuestHouseType[] | [];
@@ -51,6 +45,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
 
   const form = useForm<RoomFormData>({
     resolver: zodResolver(roomSchema),
+    mode: "onChange", // This will validate on change
     defaultValues: {
       name: "",
       roomId: "",
@@ -105,26 +100,68 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
     name: "images",
   });
 
+  // Add error handler for form validation failures
+  const onError = (errors: any) => {
+    console.log("❌ Form validation errors:", errors);
+    setSubmitError("Please check the form for errors and try again.");
+
+    // Find first error and focus on it
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField) {
+      const element = document.querySelector(
+        `[name="${firstErrorField}"]`
+      ) as HTMLElement;
+      element?.focus();
+    }
+  };
+
   const onSubmit = async (values: RoomFormData) => {
+    console.log("🚀 Form submission started");
+    console.log("Form values:", values);
+
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
+      // Manual validation check
       const validatedData = roomSchema.parse(values);
-      const result = await createRoom(validatedData);
+      console.log("✅ Validated data:", validatedData);
 
-      if (result.success) {
-        setSubmitSuccess(true);
-        form.reset();
-      } else {
-        setSubmitError("Failed to create room. Please try again.");
+      // Check if createRoom function exists
+      if (typeof createRoom !== "function") {
+        throw new Error("createRoom function is not available");
       }
+
+      const result = await createRoom(validatedData);
+      console.log("📡 API result:", result);
+
+      // Better result handling
+      if (result === null || result === undefined) {
+        throw new Error("No response from server");
+      }
+
+      // if (result.success === false || result.error) {
+      //   throw new Error(
+      //     result.error || result.message || "Failed to create room"
+      //   );
+      // }
+
+      // Success
+      setSubmitSuccess(true);
+      form.reset();
+
+      // Auto-hide success message after 5 seconds
+      setTimeout(() => setSubmitSuccess(false), 5000);
     } catch (error) {
+      console.error("❌ Form submission error:", error);
+
       if (error instanceof Error) {
         setSubmitError(error.message);
+      } else if (typeof error === "string") {
+        setSubmitError(error);
       } else {
-        setSubmitError("Unexpected error occurred.");
+        setSubmitError("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -135,9 +172,25 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Create Room</h2>
 
+      {/* Add status messages */}
+      {submitError && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          <strong>Error:</strong> {submitError}
+        </div>
+      )}
+
+      {submitSuccess && (
+        <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          <strong>Success:</strong> Room created successfully!
+        </div>
+      )}
+
       <Card className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, onError)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -145,7 +198,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                 <FormItem>
                   <FormLabel>Room Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Standard Single Room" {...field} />
+                    <Input
+                      placeholder="Standard Single Room"
+                      {...field}
+                      disabled={isSubmitting}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,12 +211,33 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
 
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Room description..."
+                      {...field}
+                      disabled={isSubmitting}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="roomId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Room ID</FormLabel>
                   <FormControl>
-                    <Input placeholder="R-101" {...field} />
+                    <Input
+                      placeholder="R-101"
+                      {...field}
+                      disabled={isSubmitting}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,6 +253,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={isSubmitting}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -197,29 +276,43 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="guestHouseId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Guest House</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ""}
+                    disabled={isSubmitting}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Guest House" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {guestHouses.map((g) => (
-                        <SelectItem key={g.id} value={g.name}>
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">{g.name}</span>
-                            <span className="text-xs text-gray-500">
-                              {g.location.city}, {g.location.country}
-                            </span>
-                          </div>
+                      {guestHouses.length === 0 ? (
+                        <SelectItem value="" disabled>
+                          No guest houses available
                         </SelectItem>
-                      ))}
+                      ) : (
+                        guestHouses.map((g) => {
+                          const id = g.id ?? "";
+                          return (
+                            <SelectItem key={id} value={id}>
+                              <div className="flex flex-col items-start">
+                                <span className="font-medium">{g.name}</span>
+                                <span className="text-xs text-gray-500">
+                                  {g.location?.city}, {g.location?.country}
+                                </span>
+                              </div>
+                            </SelectItem>
+                          );
+                        })
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -237,8 +330,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     <Input
                       type="number"
                       {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.value) || 0)
+                      }
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -256,8 +352,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     <Input
                       type="number"
                       {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.value) || 0)
+                      }
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -275,8 +374,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     <Input
                       type="number"
                       {...field}
-                      value={field.value || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(Number(e.target.value) || 0)
+                      }
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -303,6 +405,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                                   onCheckedChange={(checked) =>
                                     field.onChange(checked === true)
                                   }
+                                  disabled={isSubmitting}
                                 />
                               </FormControl>
                               <FormLabel className="text-sm capitalize">
@@ -329,8 +432,9 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                               type="number"
                               value={(field.value as number) ?? 0}
                               onChange={(e) =>
-                                field.onChange(Number(e.target.value))
+                                field.onChange(Number(e.target.value) || 0)
                               }
+                              disabled={isSubmitting}
                             />
                           </FormControl>
                           <FormMessage />
@@ -341,6 +445,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                 })}
               </div>
             </div>
+
             <div>
               <h3 className="text-lg font-semibold mb-2">Living Features</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -360,6 +465,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                               onCheckedChange={(checked) =>
                                 field.onChange(checked === true)
                               }
+                              disabled={isSubmitting}
                             />
                           </FormControl>
                           <FormLabel className="text-sm">
@@ -394,6 +500,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                               onCheckedChange={(checked) =>
                                 field.onChange(checked === true)
                               }
+                              disabled={isSubmitting}
                             />
                           </FormControl>
                           <FormLabel className="text-sm capitalize">
@@ -421,6 +528,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                           onCheckedChange={(checked) =>
                             field.onChange(checked === true)
                           }
+                          disabled={isSubmitting}
                         />
                       </FormControl>
                       <FormLabel>Wheelchair Accessible</FormLabel>
@@ -449,6 +557,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                               onCheckedChange={(checked) =>
                                 field.onChange(checked === true)
                               }
+                              disabled={isSubmitting}
                             />
                           </FormControl>
                           <FormLabel className="text-sm capitalize">
@@ -472,7 +581,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
-                          <Input placeholder="Image URL" {...field} />
+                          <Input
+                            placeholder="Image URL"
+                            {...field}
+                            disabled={isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -484,7 +597,11 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
-                          <Input placeholder="Image Name" {...field} />
+                          <Input
+                            placeholder="Image Name"
+                            {...field}
+                            disabled={isSubmitting}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -494,6 +611,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                     type="button"
                     variant="destructive"
                     onClick={() => removeImage(index)}
+                    disabled={isSubmitting}
                   >
                     ✕
                   </Button>
@@ -503,6 +621,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                 type="button"
                 variant="secondary"
                 onClick={() => addImage({ url: "", name: "" })}
+                disabled={isSubmitting}
               >
                 + Add Image
               </Button>
@@ -511,6 +630,21 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
             <Button type="submit" disabled={isSubmitting} className="w-full">
               {isSubmitting ? "Creating..." : "Create Room"}
             </Button>
+
+            {/* Debug info - Remove in production */}
+            {process.env.NODE_ENV === "development" && (
+              <div className="mt-4 p-3 bg-gray-100 rounded text-xs">
+                <details>
+                  <summary>Debug Info (Dev Only)</summary>
+                  <pre className="mt-2 bg-white p-2 rounded">
+                    Form Valid: {form.formState.isValid ? "Yes" : "No"}
+                    {"\n"}Errors:{" "}
+                    {JSON.stringify(form.formState.errors, null, 2)}
+                    {"\n"}Values: {JSON.stringify(form.getValues(), null, 2)}
+                  </pre>
+                </details>
+              </div>
+            )}
           </form>
         </Form>
       </Card>

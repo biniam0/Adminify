@@ -146,8 +146,6 @@ export function BookRoomModal({
               </SelectContent>
             </Select>
           </div>
-
-          {/* Room Details Preview */}
           {selectedRoomData && (
             <div className="bg-gray-50 p-3 rounded-lg text-sm">
               <div className="flex items-center gap-2 mb-2">
@@ -171,8 +169,6 @@ export function BookRoomModal({
               </div>
             </div>
           )}
-
-          {/* Payment Type Selector */}
           <div className="grid gap-3">
             <Label>Payment Option</Label>
             <div className="grid grid-cols-2 gap-2">

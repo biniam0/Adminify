@@ -138,7 +138,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
       <Card className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Name */}
             <FormField
               control={form.control}
               name="name"
@@ -153,7 +152,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Room ID */}
             <FormField
               control={form.control}
               name="roomId"
@@ -168,7 +166,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Room Type */}
             <FormField
               control={form.control}
               name="type"
@@ -200,7 +197,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                 </FormItem>
               )}
             />
-            {/* Guest House */}
             <FormField
               control={form.control}
               name="guestHouseId"
@@ -214,7 +210,7 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {guestHouses.map((g, idx) => (
+                      {guestHouses.map((g) => (
                         <SelectItem key={g.id} value={g.name}>
                           <div className="flex flex-col items-start">
                             <span className="font-medium">{g.name}</span>
@@ -231,7 +227,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Price */}
             <FormField
               control={form.control}
               name="price"
@@ -251,7 +246,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Square meters */}
             <FormField
               control={form.control}
               name="square_meters"
@@ -271,7 +265,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Max occupancy */}
             <FormField
               control={form.control}
               name="max_occupancy"
@@ -291,7 +284,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               )}
             />
 
-            {/* Beds */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Beds</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -383,7 +375,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               </div>
             </div>
 
-            {/* Kitchen Features */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Kitchen Features</h3>
               <div className="grid grid-cols-2 gap-4">
@@ -416,7 +407,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               </div>
             </div>
 
-            {/* Accessibility */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Accessibility</h3>
               <FormField
@@ -440,7 +430,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               />
             </div>
 
-            {/* Hygiene Features */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Hygiene Features</h3>
               <div className="grid grid-cols-2 gap-4">
@@ -473,7 +462,6 @@ const RoomForm = ({ guestHouses }: RoomFormProps) => {
               </div>
             </div>
 
-            {/* Images */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Room Images</h3>
               {imageFields.map((field, index) => (

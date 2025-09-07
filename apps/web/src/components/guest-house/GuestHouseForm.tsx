@@ -82,31 +82,27 @@ const GuestHouseForm = () => {
   });
 
   const onSubmit = async (values: GuestHouseFormData) => {
-    console.log("Form submission started", values); // Debug log
+    console.log("Form submission started", values);
 
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(false);
 
     try {
-      // Validate the data before submitting
       const validatedData = guestHouseSchema.parse(values);
-      console.log("Data validated successfully", validatedData); // Debug log
+      console.log("Data validated successfully", validatedData);
 
-      const result = await createGuestHouse(validatedData as any); // Type assertion for now
-      console.log("Guest house creation result", result); // Debug log
+      const result = await createGuestHouse(validatedData as any);
+      console.log("Guest house creation result", result);
 
       if (result) {
         setSubmitSuccess(true);
-        // Optional: Reset form after successful submission
-        // form.reset();
       } else {
         setSubmitError("Failed to create guest house. Please try again.");
       }
     } catch (error) {
       console.error("Error while creating guest house: ", error);
 
-      // Set user-friendly error message
       if (error instanceof Error) {
         setSubmitError(error.message);
       } else {
@@ -117,7 +113,6 @@ const GuestHouseForm = () => {
     }
   };
 
-  // Debug function to check form state
   const handleDebugClick = () => {
     console.log("Current form values:", form.getValues());
     console.log("Form errors:", form.formState.errors);
@@ -128,7 +123,6 @@ const GuestHouseForm = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Guests</h2>
 
-      {/* Debug Panel */}
       <div className="mb-4 p-2 bg-gray-100 rounded">
         <Button type="button" variant="outline" onClick={handleDebugClick}>
           Debug Form State
@@ -148,7 +142,6 @@ const GuestHouseForm = () => {
       <Card className="flex flex-col p-6 space-y-4 rounded-lg shadow-md gap-0">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* --- Basic Info --- */}
             <FormField
               control={form.control}
               name="name"
@@ -200,7 +193,6 @@ const GuestHouseForm = () => {
               )}
             />
 
-            {/* --- About --- */}
             <FormField
               control={form.control}
               name="about.description"
@@ -218,7 +210,6 @@ const GuestHouseForm = () => {
               )}
             />
 
-            {/* --- Location --- */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -264,7 +255,7 @@ const GuestHouseForm = () => {
                 name="location.subcity"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Subcity</FormLabel>
+                    <FormLabel>Sub City</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -287,7 +278,6 @@ const GuestHouseForm = () => {
               )}
             />
 
-            {/* --- Contact --- */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -317,7 +307,6 @@ const GuestHouseForm = () => {
               />
             </div>
 
-            {/* --- Facilities --- */}
             <FormItem>
               <FormLabel>Facilities</FormLabel>
               <div className="flex gap-2">
@@ -374,7 +363,6 @@ const GuestHouseForm = () => {
               </div>
             </FormItem>
 
-            {/* --- Images --- */}
             <FormItem>
               <FormLabel>Images</FormLabel>
               <div className="space-y-4">
@@ -423,7 +411,6 @@ const GuestHouseForm = () => {
               </div>
             </FormItem>
 
-            {/* --- Feedbacks --- */}
             <FormItem>
               <FormLabel>Feedbacks</FormLabel>
               <div className="space-y-4">

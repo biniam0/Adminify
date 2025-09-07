@@ -17,7 +17,7 @@ export type EachRoomType =
   | "PRESIDENTIAL";
 
 type RoomType = {
-  id: string;
+  id?: string;
   name: string;
   roomId: string;
   type: EachRoomType;

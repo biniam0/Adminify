@@ -140,7 +140,7 @@ const data = {
       url: "/create-guest-house",
       icon: IconReport,
     },
-    { name: "Rooms Management | Coming Soon", url: "#", icon: IconFileWord },
+    { name: "Add New Rooms", url: "/create-room", icon: IconFileWord },
     { name: "Guests", url: "/guests", icon: IconDatabase },
     { name: "Staffs", url: "/staffs", icon: IconReport },
   ],

@@ -4,7 +4,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "0",
     name: "Sunset Guest House",
-    type: "Private",
+    type: "PRIVATE",
     images: [
       {
         url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTyaMqv9T_mEcd6EU6TH5Lp3_AkRqZL6OibA&s",
@@ -155,7 +155,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "1",
     name: "Bamboo Paradise Hotel",
-    type: "Private",
+    type: "PRIVATE",
     images: [
       { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c", name: "Hotel exterior" },
       { url: "https://images.unsplash.com/photo-1560448070-1e4e0b3a563c", name: "Lobby area" },
@@ -199,7 +199,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "2",
     name: "Hiwot Guest House",
-    type: "Shared",
+    type: "SHARED",
     images: [
       { url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267", name: "Exterior view" },
       { url: "https://images.unsplash.com/photo-1522770179533-24471fcdba45", name: "Guest lounge" },
@@ -263,7 +263,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "3",
     name: "Blendana Hotel",
-    type: "Private",
+    type: "PRIVATE",
     images: [
       { url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688", name: "Hotel exterior" },
       { url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb", name: "Lobby" },
@@ -307,7 +307,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "4",
     name: "Addis Comfort Lodge",
-    type: "Shared",
+    type: "SHARED",
     images: [
       { url: "https://images.unsplash.com/photo-1533777324565-a040eb52fac2", name: "Exterior view" },
       { url: "https://images.unsplash.com/photo-1558959357-ff4c3b1be585", name: "Lounge area" },
@@ -371,7 +371,7 @@ export const dummyGuestHouses: GuestHouseType[] = [
   {
     id: "5",
     name: "Blue Nile Guest House",
-    type: "Private",
+    type: "PRIVATE",
     images: [
       { url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d", name: "Building exterior" },
       { url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb", name: "Lobby area" },

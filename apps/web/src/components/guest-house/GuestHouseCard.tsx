@@ -34,7 +34,7 @@ export function GuestHouseCard({ guestHouse }: { guestHouse: GuestHouseType }) {
             </div>
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground line-clamp-2">
-            {guestHouse.about.description }
+            {guestHouse.about?.description ?? "NaN"}
           </CardDescription>
         </CardHeader>
 
@@ -53,8 +53,8 @@ export function GuestHouseCard({ guestHouse }: { guestHouse: GuestHouseType }) {
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-yellow-500 fill-current flex-shrink-0" />
               <span className="line-clamp-1">
-                {guestHouse.about.review.averageRating} (
-                {guestHouse.about.review.totalReviewers} reviews)
+                {guestHouse.about?.review?.averageRating ?? "NaN"} (
+                {guestHouse.about?.review?.totalReviewers ?? "NaN"} reviews)
               </span>
             </div>
           </div>

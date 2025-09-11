@@ -38,53 +38,53 @@ type RoomType = {
     cribs: boolean;
   };
   living_features: {
-    private_bathroom: boolean;
-    bathtub: boolean;
-    shower: boolean;
-    hairdryer: boolean;
-    minibar: boolean;
-    tv: boolean;
-    streaming_tv: boolean;
-    wifi_available: boolean;
+    private_bathroom?: boolean;
+    bathtub?: boolean;
+    shower?: boolean;
+    hairdryer?: boolean;
+    minibar?: boolean;
+    tv?: boolean;
+    streaming_tv?: boolean;
+    wifi_available?: boolean;
   };
   kitchen_features: {
-    coffee_maker: boolean;
-    refrigerator: boolean;
-    microwave: boolean;
+    coffee_maker?: boolean;
+    refrigerator?: boolean;
+    microwave?: boolean;
   };
   accessibility: {
-    wheelchair_accessible: boolean;
+    wheelchair_accessible?: boolean;
   };
   hygiene_features: {
-    sanitizer: boolean;
-    hygiene_kits: boolean;
-    digital_keys: boolean;
+    sanitizer?: boolean;
+    hygiene_kits?: boolean;
+    digital_keys?: boolean;
   };
   last_updated: "2025-08-29T12:00:00Z";
 };
 
 export type AboutType = {
   description: string;
-  review: {
+  review?: {
     averageRating: number;
     totalReviewers: number;
   };
 };
 
 interface GuestHouseType {
-  id: string;
+  id?: string;
   name: string;
-  type: "Shared" | "Private";
+  type: "SHARED" | "PRIVATE"; // Updated to match Prisma enum
   images: { url: string; name: string }[];
-  about: AboutType;
-  feedback: { message: string; rating: number }[];
+  about?: AboutType;
+  feedback?: { message: string; rating: number }[];
   address: string;
   location: {
     continent: string;
     country: string;
     city: string;
     subcity: string;
-    nearby: string;
+    nearby?: string;
   };
   facilities: string[];
   contact: Contact;

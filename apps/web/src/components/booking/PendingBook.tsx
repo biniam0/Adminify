@@ -91,6 +91,7 @@ export default function PendingBookTable({
                     onClick={() =>
                       handleApproval(session!.user, booking.id, true)
                     }
+                    disabled={booking.status === "APPROVED"}
                   >
                     Approve
                   </Button>
@@ -100,6 +101,7 @@ export default function PendingBookTable({
                     onClick={() =>
                       handleApproval(session!.user, booking.id, false)
                     }
+                    disabled={booking.status === "REJECTED"}
                   >
                     Reject
                   </Button>

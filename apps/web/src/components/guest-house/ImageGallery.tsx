@@ -35,7 +35,7 @@ export const ImageGallery = ({
 
       {images.length > 1 && (
         <div className="flex gap-3 overflow-x-auto p-2 px-10 hide-scrollbar">
-          {images.map((image, idx) => (
+          {images && images.map((image, idx) => (
             <Button
               key={idx}
               onClick={() => setSelectedImage(idx)}

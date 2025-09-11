@@ -310,7 +310,7 @@ export function FilterHeader({
           guestHouse.location.country.toLowerCase().includes(searchLower) ||
           guestHouse.location.continent.toLowerCase().includes(searchLower) ||
           guestHouse.location.subcity.toLowerCase().includes(searchLower) ||
-          guestHouse.location.nearby.toLowerCase().includes(searchLower) ||
+          guestHouse.location.nearby?.toLowerCase().includes(searchLower) ||
           guestHouse.type.toLowerCase().includes(searchLower) ||
           guestHouse.facilities.some((facility) =>
             facility.toLowerCase().includes(searchLower)

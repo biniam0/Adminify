@@ -10,7 +10,7 @@ const allowedOrigins = [
 ];
 
 export function middleware(req: NextRequest) {
-  const origin = process.env.CORS_ORIGIN || "http://localhost:3001";
+  const origin = process.env.CORS_ORIGIN || "http://localhost:3001"
 
   // Handle preflight (OPTIONS) requests
   if (req.method === "OPTIONS") {
@@ -21,7 +21,7 @@ export function middleware(req: NextRequest) {
         "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
           ? origin
           : "",
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+        "Access-Control-Allow-Methods": "GET,POST,OPTIONS,DELETE,PUT,PATCH",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
       },
     });
@@ -31,7 +31,7 @@ export function middleware(req: NextRequest) {
   const res = NextResponse.next();
   res.headers.set("Access-Control-Allow-Credentials", "true");
   res.headers.set("Access-Control-Allow-Origin", origin);
-  res.headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT,PATCH");
   res.headers.set(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"

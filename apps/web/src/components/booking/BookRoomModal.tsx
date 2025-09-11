@@ -105,7 +105,7 @@ export function BookRoomModal({
               </SelectTrigger>
               <SelectContent>
                 {guestHouses.map((g) => (
-                  <SelectItem key={g.id} value={g.id}>
+                  <SelectItem key={g.id} value={g.name}>
                     <div className="flex flex-col items-start">
                       <span className="font-medium">{g.name}</span>
                       <span className="text-xs text-gray-500">
@@ -130,7 +130,7 @@ export function BookRoomModal({
               </SelectTrigger>
               <SelectContent>
                 {rooms.map((r) => (
-                  <SelectItem key={r.id} value={r.id}>
+                  <SelectItem key={r.id} value={r.name}>
                     <div className="flex flex-col items-start">
                       <span className="font-medium">{r.name}</span>
                       <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -146,8 +146,6 @@ export function BookRoomModal({
               </SelectContent>
             </Select>
           </div>
-
-          {/* Room Details Preview */}
           {selectedRoomData && (
             <div className="bg-gray-50 p-3 rounded-lg text-sm">
               <div className="flex items-center gap-2 mb-2">
@@ -171,8 +169,6 @@ export function BookRoomModal({
               </div>
             </div>
           )}
-
-          {/* Payment Type Selector */}
           <div className="grid gap-3">
             <Label>Payment Option</Label>
             <div className="grid grid-cols-2 gap-2">

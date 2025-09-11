@@ -97,7 +97,7 @@ export function PreviewBookModal({
     if (!bookingData) return;
 
     setIsProcessingPayment(true);
-    toast.loading("Processing payment with Chapa...", { id: "payment" })
+    toast.loading("Processing payment with Chapa...", { id: "payment" });
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const isSuccess = Math.random() > 0.1;
 
@@ -159,7 +159,7 @@ export function PreviewBookModal({
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
                 <span className="text-sm">
-                  {bookingData.guestHouse.about.review.averageRating}
+                  {bookingData.guestHouse.about?.review?.averageRating ?? "N/A"}
                 </span>
               </div>
             </div>

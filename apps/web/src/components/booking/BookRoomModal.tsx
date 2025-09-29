@@ -55,6 +55,7 @@ export function BookRoomModal({
 
   useEffect(() => {
     const gh = guestHouses.find((g) => g.id === selectedGuestHouse);
+    console.log("Rooms from Book Room Modal: ", gh?.rooms);
     setRooms(gh?.rooms ?? []);
     setSelectedRoom("");
   }, [selectedGuestHouse, guestHouses]);
@@ -105,7 +106,7 @@ export function BookRoomModal({
               </SelectTrigger>
               <SelectContent>
                 {guestHouses.map((g) => (
-                  <SelectItem key={g.id} value={g.name}>
+                  <SelectItem key={g.id} value={g.id}>
                     <div className="flex flex-col items-start">
                       <span className="font-medium">{g.name}</span>
                       <span className="text-xs text-gray-500">
@@ -130,7 +131,7 @@ export function BookRoomModal({
               </SelectTrigger>
               <SelectContent>
                 {rooms.map((r) => (
-                  <SelectItem key={r.id} value={r.name}>
+                  <SelectItem key={r.id} value={r.id}>
                     <div className="flex flex-col items-start">
                       <span className="font-medium">{r.name}</span>
                       <div className="flex items-center gap-2 text-xs text-gray-500">

@@ -27,12 +27,27 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import type { BillingDetails } from "@/types/booking.type";
+import { apiClient } from "@/lib/api-client";
 
 interface PreviewBookModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bookingData: BookingFormData | null;
   onBookingComplete: () => void;
+}
+
+interface ChapaResponse {
+  message: string;
+  status: string;
+  data: {
+    checkout_url: string;
+  } | null;
+}
+
+interface ChapaCallbackParams {
+  trx_ref: string;
+  ref_id: string;
+  status: string;
 }
 
 export function PreviewBookModal({
@@ -93,38 +108,116 @@ export function PreviewBookModal({
 
   const billing = calculateBilling();
 
-  const simulatePayment = async () => {
+  const handleChapaPayment = async () => {
     if (!bookingData) return;
 
     setIsProcessingPayment(true);
-    toast.loading("Processing payment with Chapa...", { id: "payment" });
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const isSuccess = Math.random() > 0.1;
 
-    if (isSuccess) {
-      toast.success("Payment successful! Booking confirmed.", {
-        id: "payment",
-      });
+    sessionStorage.setItem("booking_data", JSON.stringify(bookingData));
 
-      try {
-        const bookingPayload = {
-          roomId: bookingData.room.id,
-          checkIn: bookingData.checkIn,
-          checkOut: bookingData.checkOut,
-          guests: bookingData.guests,
-        };
+    // Construct the payment payload requested by Chapa API
+    const paymentData = {
+      amount: billing.totalAmount.toString(),
+      currency: "ETB",
+      email: session?.user?.email || "customer@example.com",
+      first_name: bookingData.name.split(" ")[0] || "Guest",
+      last_name: bookingData.name.split(" ").slice(1).join(" ") || "User",
+      callback_url: "http://localhost:3000/api/chapa/callback",
+      return_url: "http://localhost:3001/booking/success",
+    };
 
-        await createBooking(session!.user, bookingPayload);
+    // const paymentData = {
+    //   amount: billing.totalAmount.toString(),
+    //   currency: "ETB",
+    //   email: session?.user?.email || "customer@example.com",
+    //   first_name: "Test",
+    //   last_name: "User",
+    //   tx_ref: transactionRef,
+    //   callback_url: `${window.location.origin}/api/chapa/callback`,
+    // };
 
-        onBookingComplete();
-      } catch (err) {
-        toast.error("Booking creation failed after payment");
+    try {
+      const response = await apiClient.post(
+        "/api/chapa/payment/initialize",
+        paymentData
+      );
+
+      const checkoutUrl = response.data.data?.checkout_url;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl; // Redirect to Chapa checkout
+      } else {
+        console.error("No checkout URL returned:", response.data);
+        toast.error("Payment initialization failed. Please try again.");
+        setIsProcessingPayment(false);
       }
-    } else {
-      toast.error("Payment failed. Please try again.", { id: "payment" });
+    } catch (error) {
+      console.error("Chapa payment initialization failed:", error);
+      toast.error("Payment initialization failed. Please try again.");
+      setIsProcessingPayment(false);
     }
+  };
 
-    setIsProcessingPayment(false);
+  // Function to verify payment (you'll call this from your callback/return URL handler)
+  const verifyPayment = async (txRef: string): Promise<boolean> => {
+    try {
+      const response = await fetch(
+        `https://api.chapa.co/v1/transaction/verify/${txRef}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.status === "success" && result.data?.status === "success") {
+        // Payment verified successfully
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Payment verification failed:", error);
+      return false;
+    }
+  };
+
+  // Function to handle successful payment and create booking
+  const handlePaymentSuccess = async (txRef: string) => {
+    try {
+      const savedBookingData = sessionStorage.getItem("booking_data");
+      if (!savedBookingData) throw new Error("Booking data not found");
+
+      const bookingData = JSON.parse(savedBookingData) as BookingFormData;
+
+      const bookingPayload = {
+        roomId: bookingData.room.id,
+        checkIn: bookingData.checkIn,
+        checkOut: bookingData.checkOut,
+        guests: bookingData.guests,
+        paymentReference: txRef,
+        paymentStatus: "completed",
+        paymentMethod: "chapa",
+        totalAmount: calculateBilling().totalAmount,
+      };
+
+      await createBooking(session!.user, bookingPayload);
+
+      // Clean up session storage
+      sessionStorage.removeItem("chapa_tx_ref");
+      sessionStorage.removeItem("booking_data");
+
+      toast.success("Booking confirmed successfully!", { id: "payment" });
+      onBookingComplete();
+    } catch (error) {
+      console.error("Booking creation failed:", error);
+      toast.error(
+        "Payment successful but booking creation failed. Please contact support.",
+        { id: "payment" }
+      );
+    }
   };
 
   if (!bookingData) return null;
@@ -138,7 +231,7 @@ export function PreviewBookModal({
             Booking Preview
           </DialogTitle>
           <DialogDescription>
-            Review your booking details and proceed with payment.
+            Review your booking details and proceed with payment via Chapa.
           </DialogDescription>
         </DialogHeader>
 
@@ -322,6 +415,13 @@ export function PreviewBookModal({
             </div>
           </div>
 
+          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
+            <p className="text-sm text-amber-800">
+              <strong>Payment Info:</strong> You'll be redirected to Chapa's
+              secure payment page to complete your transaction.
+            </p>
+          </div>
+
           <DialogFooter className="gap-2">
             <Button
               variant="outline"
@@ -331,11 +431,11 @@ export function PreviewBookModal({
               Back to Edit
             </Button>
             <Button
-              onClick={simulatePayment}
+              onClick={handleChapaPayment}
               disabled={isProcessingPayment}
               className="bg-green-600 hover:bg-green-700"
             >
-              {isProcessingPayment ? "Processing..." : "Pay Now via Chapa"}
+              {isProcessingPayment ? "Redirecting..." : "Pay Now via Chapa"}
             </Button>
           </DialogFooter>
         </div>

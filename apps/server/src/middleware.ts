@@ -7,10 +7,11 @@ const allowedOrigins = [
   "https://adminify-web.vercel.app",
   "https://adminify-app.onrender.com",
   "https://adminify-api.onrender.com",
+  "https://api.chapa.co/v1/transaction/initialize",
 ];
 
 export function middleware(req: NextRequest) {
-  const origin = process.env.CORS_ORIGIN || "http://localhost:3001"
+  const origin = process.env.CORS_ORIGIN || "http://localhost:3001";
 
   // Handle preflight (OPTIONS) requests
   if (req.method === "OPTIONS") {
@@ -31,7 +32,10 @@ export function middleware(req: NextRequest) {
   const res = NextResponse.next();
   res.headers.set("Access-Control-Allow-Credentials", "true");
   res.headers.set("Access-Control-Allow-Origin", origin);
-  res.headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT,PATCH");
+  res.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET,POST,OPTIONS,DELETE,PUT,PATCH"
+  );
   res.headers.set(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"

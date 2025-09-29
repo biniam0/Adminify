@@ -1,31 +1,34 @@
-import axios from "axios";
 import { NextResponse } from "next/server";
+import axios from "axios";
 
-export async function GET(
-  req: Request,
-  { params }: { params: { txRef: string } }
-) {
+interface Params {
+  params: { txRef: string };
+}
+
+export async function GET(req: Request, { params }: Params) {
+  const { txRef } = params; // safe to use now
+
   try {
     const res = await axios.get(
-      `https://api.chapa.co/v1/transaction/verify/${params.txRef}`,
+      `https://api.chapa.co/v1/transaction/verify/${txRef}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`, // keep server-side only
+          Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    if (!res.data) {
-      return NextResponse.json(
-        { error: `HTTP ${res.status}` },
-        { status: res.status }
-      );
-    }
-
-    const data = await res.data.json();
-    return NextResponse.json(data);
+    return NextResponse.json(res.data);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(
+      "Chapa verification error:",
+      error.response?.data || error.message
+    );
+
+    const status = error.response?.status || 500;
+    const message = error.response?.data || { error: error.message };
+
+    return NextResponse.json(message, { status });
   }
 }

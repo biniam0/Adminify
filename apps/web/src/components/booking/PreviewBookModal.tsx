@@ -130,17 +130,18 @@ export function PreviewBookModal({
       last_name: bookingData.name.split(" ").slice(1).join(" ") || "User",
       tx_ref: transactionRef,
       callback_url: "http://localhost:3000/api/chapa/callback",
+      return_url: `http://localhost:3001/booking/success?tx_ref=${transactionRef}`,
     };
-    
+
     // const paymentData = {
-      //   amount: billing.totalAmount.toString(),
-      //   currency: "ETB",
-      //   email: session?.user?.email || "customer@example.com",
-      //   first_name: "Test",
-      //   last_name: "User",
-      //   tx_ref: transactionRef,
-      //   callback_url: `${window.location.origin}/api/chapa/callback`,
-      //   return_url: `${window.location.origin}booking/success`,
+    //   amount: billing.totalAmount.toString(),
+    //   currency: "ETB",
+    //   email: session?.user?.email || "customer@example.com",
+    //   first_name: "Test",
+    //   last_name: "User",
+    //   tx_ref: transactionRef,
+    //   callback_url: `${window.location.origin}/api/chapa/callback`,
+    //   return_url: `${window.location.origin}booking/success`,
     // };
 
     try {

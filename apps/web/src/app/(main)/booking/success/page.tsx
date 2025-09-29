@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 type PaymentStatus = "verifying" | "success" | "failed" | "expired";
 
@@ -23,7 +24,8 @@ interface ChapaVerificationResponse {
 }
 
 export default function BookingSuccessPage() {
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("verifying");
+  const [paymentStatus, setPaymentStatus] =
+    useState<PaymentStatus>("verifying");
   const [retrying, setRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
@@ -32,12 +34,12 @@ export default function BookingSuccessPage() {
   const txRef = searchParams.get("tx_ref");
 
   // Call our own API route instead of Chapa directly
-  const verifyPayment = async (txRef: string): Promise<ChapaVerificationResponse> => {
-    const res = await fetch(`/api/verify-payment/${txRef}`);
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
+  const verifyPayment = async (
+    txRef: string
+  ): Promise<ChapaVerificationResponse> => {
+    const res = await apiClient.get(`/api/chapa/verify-payment/${txRef}`);
+
+    return res.data;
   };
 
   const handleVerification = async (): Promise<void> => {
@@ -111,7 +113,9 @@ export default function BookingSuccessPage() {
         return (
           <>
             <XCircle className="w-12 h-12 text-red-600 mx-auto" />
-            <p className="mt-4 text-red-700 font-medium">Something went wrong</p>
+            <p className="mt-4 text-red-700 font-medium">
+              Something went wrong
+            </p>
             <p className="text-sm text-gray-500 mt-2">
               We couldn’t verify your payment. You can try again.
             </p>
@@ -143,7 +147,11 @@ export default function BookingSuccessPage() {
 
         <div className="grid gap-2">
           {paymentStatus === "failed" && (
-            <Button onClick={handleRetry} disabled={retrying} className="w-full">
+            <Button
+              onClick={handleRetry}
+              disabled={retrying}
+              className="w-full"
+            >
               {retrying ? "Retrying..." : "Retry Verification"}
             </Button>
           )}

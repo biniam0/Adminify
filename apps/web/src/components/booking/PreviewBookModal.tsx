@@ -108,11 +108,17 @@ export function PreviewBookModal({
 
   const billing = calculateBilling();
 
+  const generateTransactionRef = (): string => {
+    return `booking-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
   const handleChapaPayment = async () => {
     if (!bookingData) return;
 
     setIsProcessingPayment(true);
 
+    const transactionRef = generateTransactionRef();
+    sessionStorage.setItem("chapa_tx_ref", transactionRef);
     sessionStorage.setItem("booking_data", JSON.stringify(bookingData));
 
     // Construct the payment payload requested by Chapa API
@@ -122,18 +128,19 @@ export function PreviewBookModal({
       email: session?.user?.email || "customer@example.com",
       first_name: bookingData.name.split(" ")[0] || "Guest",
       last_name: bookingData.name.split(" ").slice(1).join(" ") || "User",
+      tx_ref: transactionRef,
       callback_url: "http://localhost:3000/api/chapa/callback",
-      return_url: "http://localhost:3001/booking/success",
     };
-
+    
     // const paymentData = {
-    //   amount: billing.totalAmount.toString(),
-    //   currency: "ETB",
-    //   email: session?.user?.email || "customer@example.com",
-    //   first_name: "Test",
-    //   last_name: "User",
-    //   tx_ref: transactionRef,
-    //   callback_url: `${window.location.origin}/api/chapa/callback`,
+      //   amount: billing.totalAmount.toString(),
+      //   currency: "ETB",
+      //   email: session?.user?.email || "customer@example.com",
+      //   first_name: "Test",
+      //   last_name: "User",
+      //   tx_ref: transactionRef,
+      //   callback_url: `${window.location.origin}/api/chapa/callback`,
+      //   return_url: `${window.location.origin}booking/success`,
     // };
 
     try {
@@ -141,6 +148,7 @@ export function PreviewBookModal({
         "/api/chapa/payment/initialize",
         paymentData
       );
+      console.log("Sent payment data:", paymentData);
 
       const checkoutUrl = response.data.data?.checkout_url;
       if (checkoutUrl) {

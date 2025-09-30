@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Dialog,
@@ -23,7 +23,7 @@ interface ChapaVerificationResponse {
   data: { status: string } | null;
 }
 
-export default function BookingSuccessPage() {
+function BookingSuccessContent() {
   const [paymentStatus, setPaymentStatus] =
     useState<PaymentStatus>("verifying");
   const [retrying, setRetrying] = useState(false);
@@ -38,7 +38,6 @@ export default function BookingSuccessPage() {
     txRef: string
   ): Promise<ChapaVerificationResponse> => {
     const res = await apiClient.get(`/api/chapa/verify-payment/${txRef}`);
-
     return res.data;
   };
 
@@ -69,13 +68,14 @@ export default function BookingSuccessPage() {
       }
     } catch (err) {
       console.error("Verification error:", err);
-      toast.error("We couldn’t verify your payment.");
+      toast.error("We couldn't verify your payment.");
       setPaymentStatus("failed");
     }
   };
 
   useEffect(() => {
     if (txRef) handleVerification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txRef]);
 
   const handleClose = () => router.push("/");
@@ -93,7 +93,7 @@ export default function BookingSuccessPage() {
           <>
             <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto" />
             <p className="mt-4 text-gray-600">
-              Hang tight! We’re confirming your payment…
+              Hang tight! We're confirming your payment…
             </p>
           </>
         );
@@ -117,7 +117,7 @@ export default function BookingSuccessPage() {
               Something went wrong
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              We couldn’t verify your payment. You can try again.
+              We couldn't verify your payment. You can try again.
             </p>
           </>
         );
@@ -161,5 +161,27 @@ export default function BookingSuccessPage() {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export default function BookingSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <Dialog open={true}>
+          <DialogContent className="max-w-sm text-center space-y-4">
+            <DialogHeader>
+              <DialogTitle>Payment Status</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto" />
+              <p className="mt-4 text-gray-600">Loading...</p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      }
+    >
+      <BookingSuccessContent />
+    </Suspense>
   );
 }

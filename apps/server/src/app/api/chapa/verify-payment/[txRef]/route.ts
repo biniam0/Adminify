@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 interface Params {
-  params: { txRef: string };
+  params: Promise<{ txRef: string }>;
 }
 
 export async function GET(req: Request, { params }: Params) {
-  const { txRef } = params; // safe to use now
+  const { txRef } = await params; // safe to use now
 
   try {
     const res = await axios.get(

@@ -106,7 +106,7 @@ export function BookRoomModal({
               </SelectTrigger>
               <SelectContent>
                 {guestHouses.map((g) => (
-                  <SelectItem key={g.id} value={g.id}>
+                  <SelectItem key={g.id} value={g.id ?? ""}>
                     <div className="flex flex-col items-start">
                       <span className="font-medium">{g.name}</span>
                       <span className="text-xs text-gray-500">
